@@ -174,7 +174,7 @@ export function RecordPage({ entity }: { entity: string }) {
     <div className="animate-fade-in space-y-6">
       <nav
         aria-label="Subnavegação da seção"
-        className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto border-b px-4 pb-3 sm:mx-0 sm:border-0 sm:px-0 sm:pb-0"
+        className="glass-navigation no-scrollbar flex w-full items-center gap-1.5 overflow-x-auto rounded-2xl border p-1.5 sm:w-fit"
       >
         {tabs.map(([href, label]) => {
           const active = pathname === href;
@@ -184,10 +184,10 @@ export function RecordPage({ entity }: { entity: string }) {
               href={href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "inline-flex shrink-0 items-center rounded-xl px-3.5 py-2 text-xs font-medium transition-colors",
+                "inline-flex shrink-0 items-center rounded-xl px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
                 active
-                  ? "bg-primary text-primary-foreground shadow-2xs font-semibold"
-                  : "border bg-card text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                  ? "glass-nav-active font-semibold text-foreground"
+                  : "text-muted-foreground hover:bg-glass-light-bg hover:text-foreground",
               )}
             >
               {label}
@@ -225,27 +225,32 @@ export function RecordPage({ entity }: { entity: string }) {
       {entity === "assets" && <CdiPanel data={data} />}
 
       {entity === "transactions" && rows.length > 0 && (
-        <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
-          <div className="card p-4">
-            <p className="text-xs text-muted-foreground">Receitas pagas (filtro)</p>
-            <p className="metric-value mt-1.5 text-lg font-semibold text-gain sm:text-xl">
+        <section className="card grid grid-cols-2 gap-5 p-5 md:grid-cols-4 sm:p-6">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground sm:text-sm">
+              Receitas pagas (filtro)
+            </p>
+            <p className="metric-value text-xl font-semibold text-gain sm:text-2xl">
               {formatCurrency(txIncome)}
             </p>
           </div>
-          <div className="card p-4">
-            <p className="text-xs text-muted-foreground">Despesas pagas (filtro)</p>
-            <p className="metric-value mt-1.5 text-lg font-semibold text-loss sm:text-xl">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground sm:text-sm">
+              Despesas pagas (filtro)
+            </p>
+            <p className="metric-value text-xl font-semibold text-loss sm:text-2xl">
               {formatCurrency(txExpense)}
             </p>
           </div>
-          <div className="card p-4">
-            <p className="text-xs text-muted-foreground">Saldo líquido</p>
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-muted-foreground sm:text-sm">Saldo líquido</p>
             <p
               className={cn(
-                "metric-value mt-1.5 text-lg font-semibold sm:text-xl",
+                "metric-value text-xl font-semibold sm:text-2xl",
                 txNet.gt(0) ? "text-gain" : txNet.lt(0) ? "text-loss" : "text-foreground",
               )}
             >
+              {txNet.gt(0) ? "+" : ""}
               {formatCurrency(txNet)}
             </p>
           </div>
@@ -255,38 +260,38 @@ export function RecordPage({ entity }: { entity: string }) {
               setFilters((f) => ({ ...f, status: f.status === "pending" ? "" : "pending" }))
             }
             className={cn(
-              "card card-interactive p-4 text-left",
-              filters.status === "pending" && "border-warning/50 bg-warning/5",
+              "cursor-pointer rounded-xl p-1 text-left transition-colors hover:bg-glass-light-bg",
+              filters.status === "pending" && "glass-nav-active",
             )}
           >
-            <p className="text-xs text-muted-foreground">Pendentes</p>
-            <p className="metric-value mt-1.5 text-lg font-semibold text-warning sm:text-xl">
+            <p className="text-xs font-medium text-muted-foreground sm:text-sm">Pendentes</p>
+            <p className="metric-value mt-1 text-lg font-semibold text-warning sm:text-xl">
               {txPending} lançamento(s)
             </p>
           </button>
-        </div>
+        </section>
       )}
 
       {entity === "accounts" && (
-        <div className="grid gap-3.5 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((r) => (
-            <div key={r.id} className="card card-interactive flex flex-col justify-between p-5">
-              <button className="text-left" onClick={() => setDetail(r)}>
+            <div key={r.id} className="card card-interactive flex flex-col justify-between p-5 sm:p-6">
+              <button className="cursor-pointer text-left" onClick={() => setDetail(r)}>
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-sm font-semibold">
-                    <span style={{ background: text(r.color) }} className="size-2.5 rounded-full" />
+                  <span className="flex items-center gap-2.5 text-base font-semibold tracking-tight">
+                    <span style={{ background: text(r.color) }} className="size-3 rounded-full" />
                     {text(r.name)}
                   </span>
                   <ArrowUpRight className="size-4 text-muted-foreground" />
                 </div>
-                <p className="metric-value mt-4 text-2xl font-semibold">
+                <p className="metric-value mt-4 text-2xl font-semibold sm:text-3xl">
                   {formatCurrency(text(r.current_balance))}
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">
+                <p className="mt-1.5 text-xs text-muted-foreground">
                   {labels[text(r.type)]} · {labels[text(r.status)]}
                 </p>
               </button>
-              <div className="mt-4 flex gap-2 border-t pt-3.5">
+              <div className="mt-4 flex gap-2 border-t border-border pt-4">
                 <Button
                   size="sm"
                   variant="outline"
@@ -324,7 +329,7 @@ export function RecordPage({ entity }: { entity: string }) {
       )}
 
       {entity === "budgets" && (
-        <div className="grid gap-3.5 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {budgetUsage(data, rows[0] ? text(rows[0].month).slice(0, 7) : today().slice(0, 7)).map(
             (b) => {
               const pct = Math.min(100, Math.max(0, b.percent));
@@ -335,11 +340,11 @@ export function RecordPage({ entity }: { entity: string }) {
                     ? "bg-warning"
                     : "bg-primary";
               return (
-                <div key={b.row.id} className="card p-5">
-                  <p className="text-sm font-semibold">{b.name}</p>
-                  <p className="metric-value mt-3 text-xl font-semibold">
+                <div key={b.row.id} className="card p-5 sm:p-6">
+                  <p className="text-base font-semibold tracking-tight">{b.name}</p>
+                  <p className="metric-value mt-3 text-2xl font-semibold">
                     {formatCurrency(b.spent)}{" "}
-                    <span className="text-xs font-normal text-muted-foreground">
+                    <span className="text-xs font-normal text-muted-foreground sm:text-sm">
                       de {formatCurrency(b.limit)}
                     </span>
                   </p>
@@ -348,7 +353,7 @@ export function RecordPage({ entity }: { entity: string }) {
                     aria-valuenow={Math.round(pct)}
                     aria-valuemin={0}
                     aria-valuemax={100}
-                    className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
+                    className="mt-3.5 h-2.5 w-full overflow-hidden rounded-full bg-muted"
                   >
                     <div
                       className={cn("h-full rounded-full transition-all duration-300", barColor)}
@@ -357,7 +362,7 @@ export function RecordPage({ entity }: { entity: string }) {
                   </div>
                   <p
                     className={cn(
-                      "mt-2 text-xs",
+                      "mt-2.5 text-xs",
                       b.percent >= 100
                         ? "font-medium text-loss"
                         : b.percent >= 80
@@ -376,19 +381,19 @@ export function RecordPage({ entity }: { entity: string }) {
       )}
 
       {entity === "goals" && (
-        <div className="grid gap-3.5 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((g) => {
             const p = goalProgress(g);
             const pct = Math.min(100, Math.max(0, p.percent));
             return (
-              <div key={g.id} className="card p-5">
+              <div key={g.id} className="card p-5 sm:p-6">
                 <div className="flex items-center justify-between gap-2">
-                  <h2 className="truncate text-sm font-semibold">{text(g.name)}</h2>
+                  <h2 className="truncate text-base font-semibold tracking-tight">{text(g.name)}</h2>
                   <span className="badge">{labels[text(g.status)]}</span>
                 </div>
-                <p className="metric-value mt-4 text-xl font-semibold">
+                <p className="metric-value mt-4 text-2xl font-semibold">
                   {formatCurrency(p.saved)}{" "}
-                  <span className="text-xs font-normal text-muted-foreground">
+                  <span className="text-xs font-normal text-muted-foreground sm:text-sm">
                     / {formatCurrency(p.target)}
                   </span>
                 </p>
@@ -397,17 +402,17 @@ export function RecordPage({ entity }: { entity: string }) {
                   aria-valuenow={Math.round(pct)}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted"
+                  className="mt-3.5 h-2.5 w-full overflow-hidden rounded-full bg-muted"
                 >
                   <div
                     className="h-full rounded-full bg-primary transition-all duration-300"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">
+                <p className="mt-2.5 text-xs text-muted-foreground">
                   {p.percent.toFixed(0)}% · Faltam {formatCurrency(p.remaining)}
                 </p>
-                <p className="mt-3 text-xs text-muted-foreground">
+                <p className="mt-2 text-xs text-muted-foreground">
                   {p.overdue
                     ? "Prazo encerrado"
                     : `${formatCurrency(p.monthly)}/mês até ${formatDate(text(g.deadline))}`}
@@ -434,7 +439,7 @@ export function RecordPage({ entity }: { entity: string }) {
       )}
 
       {entity === "portfolios" && (
-        <div className="grid gap-3.5 sm:grid-cols-2 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {rows.map((r) => {
             const ps = positions(data).filter((p) => p.row.portfolio_id === r.id);
             const value = ps.reduce((s, p) => s.plus(p.value), num(0));
@@ -444,10 +449,12 @@ export function RecordPage({ entity }: { entity: string }) {
               <button
                 onClick={() => setDetail(r)}
                 key={r.id}
-                className="card card-interactive p-5 text-left"
+                className="card card-interactive cursor-pointer p-5 text-left sm:p-6"
               >
-                <p className="text-sm font-semibold">{text(r.name)}</p>
-                <p className="metric-value mt-3 text-2xl font-semibold">{formatCurrency(value)}</p>
+                <p className="text-base font-semibold tracking-tight">{text(r.name)}</p>
+                <p className="metric-value mt-3 text-2xl font-semibold sm:text-3xl">
+                  {formatCurrency(value)}
+                </p>
                 <p className="mt-1.5 text-xs text-muted-foreground">
                   {ps.filter((p) => num(p.row.quantity).gt(0)).length} ativos · Custo{" "}
                   {formatCurrency(cost)}
@@ -458,6 +465,7 @@ export function RecordPage({ entity }: { entity: string }) {
                     diff.gt(0) ? "text-gain" : diff.lt(0) ? "text-loss" : "text-muted-foreground",
                   )}
                 >
+                  {diff.gt(0) ? "+" : ""}
                   {formatCurrency(diff)} ({cost.gt(0) ? diff.div(cost).mul(100).toFixed(2) : "0.00"}%)
                 </p>
               </button>
@@ -468,8 +476,8 @@ export function RecordPage({ entity }: { entity: string }) {
 
       {(entity === "assets" || entity === "portfolios") && (
         <section className="card overflow-hidden">
-          <div className="border-b px-5 py-4">
-            <h2 className="text-sm font-semibold">Posições consolidadas</h2>
+          <div className="border-b border-border px-5 py-4 sm:px-6">
+            <h2 className="text-base font-semibold tracking-tight">Posições consolidadas</h2>
           </div>
           <PositionsTable data={data} />
         </section>
@@ -508,7 +516,7 @@ export function RecordPage({ entity }: { entity: string }) {
         {(filterFields.length > 0 || dateField) && (
           <div
             className={cn(
-              "filter-grid flex-wrap gap-2.5 border-b bg-surface-subtle/60 p-4",
+              "filter-grid flex-wrap gap-2.5 border-b border-border bg-glass-light-bg p-4",
               showFilters || activeFilterCount > 0 ? "grid md:flex" : "hidden md:flex",
             )}
           >
@@ -584,17 +592,17 @@ export function RecordPage({ entity }: { entity: string }) {
         ) : (
           <div className="overflow-x-auto">
             <table className="responsive-records w-full whitespace-nowrap text-left text-sm">
-              <thead className="border-b bg-surface-subtle/70 text-[11px] uppercase tracking-wider text-muted-foreground">
+              <thead className="border-b border-border bg-glass-light-bg text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   {config.columns.map((c) => (
-                    <th key={c} className="px-5 py-3 font-semibold">
+                    <th key={c} className="px-5 py-3.5 font-semibold">
                       {fieldLabels[c] || c}
                     </th>
                   ))}
-                  <th className="px-5 py-3 text-right font-semibold">Ações</th>
+                  <th className="px-5 py-3.5 text-right font-semibold">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-border">
                 {rows.map((r) => (
                   <tr key={r.id} className="transition-colors hover:bg-muted/35">
                     {config.columns.map((c) => (
@@ -761,7 +769,7 @@ export function RecordPage({ entity }: { entity: string }) {
           </div>
         )}
 
-        <div className="border-t bg-surface-subtle/40 px-5 py-3 text-xs text-muted-foreground">
+        <div className="border-t border-border bg-glass-light-bg px-5 py-3 text-xs text-muted-foreground">
           {rows.length} registro(s)
         </div>
       </section>
@@ -855,13 +863,15 @@ function RecordDetails({
 
   return (
     <div className="space-y-6">
-      <dl className="grid grid-cols-2 gap-4 rounded-xl border bg-surface-subtle/50 p-4 text-sm">
+      <dl className="grid grid-cols-2 gap-4 rounded-2xl border border-glass-border bg-glass-light-bg p-4 text-sm">
         {entities[entity].fields.map((f) => (
           <div key={f.key}>
-            <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+            <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               {f.label}
             </dt>
-            <dd className="mt-1 break-words font-medium">{displayValue(entity, f.key, row, data)}</dd>
+            <dd className="mt-1 break-words font-medium text-foreground">
+              {displayValue(entity, f.key, row, data)}
+            </dd>
           </div>
         ))}
       </dl>

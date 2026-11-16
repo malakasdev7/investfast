@@ -646,7 +646,7 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
     <div className="animate-fade-in space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+          <p className="section-kicker">
             Planejamento e Simulação
           </p>
           <h1 className="page-heading">Calculadora de Investimentos</h1>
@@ -673,10 +673,10 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
         </div>
       </div>
 
-      {/* Navegação dos 11 Módulos da Calculadora */}
+      {/* Navegação dos 10 Módulos da Calculadora */}
       <nav
         aria-label="Módulos da calculadora"
-        className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto border-b px-4 pb-3 sm:mx-0 sm:flex-wrap sm:border-0 sm:px-0 sm:pb-0"
+        className="glass-navigation no-scrollbar flex gap-1.5 overflow-x-auto rounded-2xl border p-1.5 sm:flex-wrap"
       >
         {TABS.map((item) => (
           <button
@@ -685,10 +685,10 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
             onClick={() => setTab(item.id)}
             aria-pressed={tab === item.id}
             className={cn(
-              "shrink-0 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all",
+              "cursor-pointer shrink-0 rounded-xl px-3.5 py-2 text-xs font-medium transition-colors sm:text-sm",
               tab === item.id
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "border bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "glass-nav-active font-semibold text-foreground"
+                : "text-muted-foreground hover:bg-glass-light-bg hover:text-foreground",
             )}
           >
             {item.label}
@@ -700,8 +700,8 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
       <div className="grid gap-6 xl:grid-cols-[1fr_1.45fr]">
         {/* Coluna de Parâmetros */}
         <section className="card space-y-4 p-5 sm:p-6">
-          <div className="border-b pb-3.5">
-            <h2 className="flex items-center gap-2 text-sm font-semibold">
+          <div className="border-b border-border pb-3.5">
+            <h2 className="flex items-center gap-2 text-base font-semibold tracking-tight">
               <Calculator className="size-4 text-primary" />
               {currentTabMeta.label}
             </h2>
@@ -1059,7 +1059,7 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
                 {compareOptions.map((opt, idx) => (
                   <div
                     key={idx}
-                    className="grid grid-cols-[1.4fr_0.85fr_0.75fr_auto] items-center gap-2 rounded-xl border bg-background/60 p-2.5"
+                    className="grid grid-cols-2 items-center gap-2 rounded-xl border border-glass-border bg-glass-light-bg p-2.5 sm:grid-cols-[1.4fr_0.85fr_0.75fr_auto]"
                   >
                     <input
                       className="input m-0 text-xs"
@@ -1515,46 +1515,46 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
           {(tab === "compound_interest" || tab === "monthly_contributions") && (
             <>
               <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
-                <div className="card hero-metric col-span-2 p-4 sm:col-span-1">
-                  <p className="text-xs text-slate-300">Patrimônio final bruto</p>
-                  <p className="metric-value mt-2 text-2xl font-semibold">
+                <div className="card hero-metric col-span-2 p-4 sm:col-span-1 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Patrimônio final bruto</p>
+                  <p className="metric-value mt-2 text-2xl font-semibold text-foreground">
                     {formatCurrency(compoundResult.finalTotal)}
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-300">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Real descontando IPCA: {formatCurrency(compoundResult.realFinalTotal)}
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Valor final líquido (pós IR/adm)</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-primary">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Valor final líquido (pós IR/adm)</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-primary sm:text-2xl">
                     {formatCurrency(compoundResult.finalNetTotal)}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     IR: {formatCurrency(compoundResult.taxPaid)} · Adm: {formatCurrency(compoundResult.adminFeesPaid)}
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Total investido</p>
-                  <p className="metric-value mt-2 text-xl font-semibold">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Total investido</p>
+                  <p className="metric-value mt-2 text-xl font-semibold sm:text-2xl">
                     {formatCurrency(compoundResult.totalInvested)}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Rentab. total: +{compoundResult.totalReturnPct}% ({compoundResult.annualizedReturnPct}% a.a.)
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Juros acumulados</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-gain">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Juros acumulados</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-gain sm:text-2xl">
                     {formatCurrency(compoundResult.totalInterest)}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Rentab. real líquida: {compoundResult.realReturnPct}% ({compoundResult.interestSharePct}% juros)
                   </p>
                 </div>
               </div>
 
-              <div className="card p-5">
-                <h3 className="mb-4 text-sm font-semibold">
+              <div className="card p-5 sm:p-6">
+                <h3 className="mb-4 text-base font-semibold tracking-tight">
                   Curva de crescimento patrimonial (Bruto vs. Líquido vs. Poder de Compra)
                 </h3>
                 <EvolutionChart
@@ -1573,42 +1573,42 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
           {tab === "financial_goal" && (
             <>
               <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
-                <div className="card hero-metric col-span-2 p-4 sm:col-span-1">
-                  <p className="text-xs text-slate-300">Aporte mensal necessário</p>
-                  <p className="metric-value mt-2 text-2xl font-semibold">
+                <div className="card hero-metric col-span-2 p-4 sm:col-span-1 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Aporte mensal necessário</p>
+                  <p className="metric-value mt-2 text-2xl font-semibold text-foreground">
                     {formatCurrency(goalResult.requiredMonthlyContribution)}
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-300">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Para atingir {formatCurrency(goalResult.targetAmount)} no prazo
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Prazo c/ aporte planejado</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-primary">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Prazo c/ aporte planejado</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-primary sm:text-2xl">
                     {goalResult.reachableWithin50Years
                       ? `${goalResult.monthsToReachGoal} meses`
                       : "+50 anos"}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     ~{goalResult.yearsToReachGoal} anos aportando {formatCurrency(n(plannedGoalMonthly, n(monthlyContribution)))}/mês
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Total em novos aportes</p>
-                  <p className="metric-value mt-2 text-xl font-semibold">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Total em novos aportes</p>
+                  <p className="metric-value mt-2 text-xl font-semibold sm:text-2xl">
                     {formatCurrency(goalResult.totalContributionsToMake)}
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Juros a favor da meta</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-gain">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Juros a favor da meta</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-gain sm:text-2xl">
                     {formatCurrency(goalResult.projectedInterestEarned)}
                   </p>
                 </div>
               </div>
 
-              <div className="card p-5">
-                <h3 className="mb-4 text-sm font-semibold">Trajetória até a meta financeira</h3>
+              <div className="card p-5 sm:p-6">
+                <h3 className="mb-4 text-base font-semibold tracking-tight">Trajetória até a meta financeira</h3>
                 <EvolutionChart
                   data={goalResult.series}
                   keys={[
@@ -1623,36 +1623,36 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
           {tab === "financial_independence" && (
             <>
               <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3">
-                <div className="card hero-metric col-span-2 p-4 sm:col-span-1">
-                  <p className="text-xs text-slate-300">Patrimônio-alvo para viver de renda</p>
-                  <p className="metric-value mt-2 text-2xl font-semibold">
+                <div className="card hero-metric col-span-2 p-4 sm:col-span-1 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Patrimônio-alvo para viver de renda</p>
+                  <p className="metric-value mt-2 text-2xl font-semibold text-foreground">
                     {formatCurrency(fiResult.requiredPatrimony)}
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-300">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Taxa de retirada segura: {fiResult.safeWithdrawalRatePct}% a.a.
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Tempo estimado</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-primary">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Tempo estimado</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-primary sm:text-2xl">
                     {fiResult.reachableWithin60Years
                       ? `${fiResult.yearsToIndependence} anos (${fiResult.monthsToIndependence} m)`
                       : "+60 anos"}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Juro real descontado da inflação: {fiResult.realAnnualReturnPct}% a.a.
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Renda passiva sustentável hoje</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-gain">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Renda passiva sustentável hoje</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-gain sm:text-2xl">
                     {formatCurrency(fiResult.currentSustainableIncome)}/mês
                   </p>
                 </div>
               </div>
 
-              <div className="card p-5">
-                <h3 className="mb-4 text-sm font-semibold">
+              <div className="card p-5 sm:p-6">
+                <h3 className="mb-4 text-base font-semibold tracking-tight">
                   Evolução rumo à Independência Financeira (em moeda de hoje)
                 </h3>
                 <EvolutionChart
@@ -1668,34 +1668,34 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
 
           {tab === "real_return" && (
             <div className="card space-y-4 p-5 sm:p-6">
-              <h3 className="text-base font-semibold">
+              <h3 className="text-base font-semibold tracking-tight">
                 Decomposição da Rentabilidade Real (Equação de Fisher)
               </h3>
               <div className="grid gap-3.5 sm:grid-cols-3">
-                <div className="rounded-2xl border bg-background/60 p-4">
+                <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
                   <p className="text-xs text-muted-foreground">Taxa Líquida Nominal</p>
                   <p className="metric-value mt-1.5 text-2xl font-semibold">
                     {realReturnResult.netNominalAnnualPct}% a.a.
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Bruta: {realReturnResult.grossNominalAnnualPct}% a.a.
                   </p>
                 </div>
-                <div className="rounded-2xl border bg-gain/5 border-gain/30 p-4">
+                <div className="rounded-2xl border border-gain/30 bg-gain/8 p-4">
                   <p className="text-xs text-muted-foreground">Ganho Real Acima da Inflação</p>
                   <p className="metric-value mt-1.5 text-2xl font-semibold text-gain">
                     {realReturnResult.realAnnualPct}% a.a.
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Descontando IPCA de {realReturnResult.inflationAnnualPct}% a.a.
                   </p>
                 </div>
-                <div className="rounded-2xl border bg-background/60 p-4">
+                <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
                   <p className="text-xs text-muted-foreground">Poder de Compra Final</p>
                   <p className="metric-value mt-1.5 text-2xl font-semibold text-primary">
                     {formatCurrency(realReturnResult.realPurchasingPower)}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Valor nominal: {formatCurrency(realReturnResult.nominalFinalAmount)}
                   </p>
                 </div>
@@ -1707,7 +1707,7 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
             <div className="card space-y-4 p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-base font-semibold">
+                  <h3 className="text-base font-semibold tracking-tight">
                     Comparação entre {customCompareResult.options.length} investimentos ({customCompareResult.months} meses)
                   </h3>
                   <p className="text-xs text-muted-foreground">
@@ -1727,7 +1727,9 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
                     key={`${opt.name}-${idx}`}
                     className={cn(
                       "rounded-2xl border p-4",
-                      idx === 0 ? "border-gain/40 bg-gain/5" : "bg-background/60",
+                      idx === 0
+                        ? "border-gain/40 bg-gain/8"
+                        : "border-glass-border bg-glass-light-bg",
                     )}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1761,7 +1763,7 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
             <div className="card space-y-4 p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-base font-semibold">
+                  <h3 className="text-base font-semibold tracking-tight">
                     Ranking Renda Fixa Líquida (IR de {comparatorResult.irRatePct}% no prazo)
                   </h3>
                   <p className="text-xs text-muted-foreground">
@@ -1783,7 +1785,9 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
                     key={opt.name}
                     className={cn(
                       "rounded-2xl border p-4",
-                      idx === 0 ? "border-gain/40 bg-gain/5" : "bg-background/60",
+                      idx === 0
+                        ? "border-gain/40 bg-gain/8"
+                        : "border-glass-border bg-glass-light-bg",
                     )}
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1812,8 +1816,8 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
 
           {tab === "portfolio_rebalance" && (
             <div className="card overflow-hidden">
-              <div className="border-b p-5">
-                <h3 className="text-base font-semibold">
+              <div className="border-b border-border p-5 sm:p-6">
+                <h3 className="text-base font-semibold tracking-tight">
                   Plano de alocação do novo aporte ({formatCurrency(rebalanceResult.newContribution)})
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -1822,18 +1826,18 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="border-b bg-muted/40 text-xs text-muted-foreground">
+                  <thead className="border-b border-border bg-glass-light-bg text-xs uppercase tracking-wider text-muted-foreground">
                     <tr>
-                      <th className="p-3.5">Classe</th>
-                      <th className="p-3.5">Atual</th>
-                      <th className="p-3.5">Meta</th>
-                      <th className="p-3.5">Comprar com o aporte</th>
-                      <th className="p-3.5">Novo peso</th>
+                      <th className="p-3.5 font-semibold">Classe</th>
+                      <th className="p-3.5 font-semibold">Atual</th>
+                      <th className="p-3.5 font-semibold">Meta</th>
+                      <th className="p-3.5 font-semibold">Comprar com o aporte</th>
+                      <th className="p-3.5 font-semibold">Novo peso</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y">
+                  <tbody className="divide-y divide-border">
                     {rebalanceResult.items.map((item) => (
-                      <tr key={item.name}>
+                      <tr key={item.name} className="transition-colors hover:bg-muted/35">
                         <td className="p-3.5 font-medium">{item.name}</td>
                         <td className="tabular p-3.5">
                           {formatCurrency(item.currentValue)} ({item.currentSharePct}%)
@@ -1854,37 +1858,37 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
           {tab === "debt_payoff" && (
             <>
               <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3">
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Parcela Price padrão</p>
-                  <p className="metric-value mt-2 text-xl font-semibold">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Parcela Price padrão</p>
+                  <p className="metric-value mt-2 text-xl font-semibold sm:text-2xl">
                     {formatCurrency(debtResult.priceInstallment)}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     1ª SAC: {formatCurrency(debtResult.sacFirstInstallment)}
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Economia de juros c/ extra</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-gain">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Economia de juros c/ extra</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-gain sm:text-2xl">
                     {formatCurrency(debtResult.interestSavedWithExtra)}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Total juros s/ extra: {formatCurrency(debtResult.totalInterestPrice)}
                   </p>
                 </div>
-                <div className="card col-span-2 p-4 sm:col-span-1">
-                  <p className="text-xs text-muted-foreground">Prazo reduzido</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-primary">
+                <div className="card col-span-2 p-4 sm:col-span-1 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Prazo reduzido</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-primary sm:text-2xl">
                     {debtResult.monthsSaved} meses a menos
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Quitação em {debtResult.monthsWithExtra} meses
                   </p>
                 </div>
               </div>
 
-              <div className="card p-5">
-                <h3 className="mb-4 text-sm font-semibold">
+              <div className="card p-5 sm:p-6">
+                <h3 className="mb-4 text-base font-semibold tracking-tight">
                   Queda do saldo devedor (Padrão vs. Com Amortização Extra)
                 </h3>
                 <EvolutionChart
@@ -1905,23 +1909,23 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
           {tab === "stocks_fiis" && (
             <>
               <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
-                <div className="card hero-metric col-span-2 p-4 sm:col-span-1">
-                  <p className="text-xs text-slate-300">Renda passiva mensal final</p>
-                  <p className="metric-value mt-2 text-2xl font-semibold">
+                <div className="card hero-metric col-span-2 p-4 sm:col-span-1 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Renda passiva mensal final</p>
+                  <p className="metric-value mt-2 text-2xl font-semibold text-foreground">
                     {formatCurrency(snowballResult.finalMonthlyDividend)}/mês
                   </p>
-                  <p className="mt-1 text-[11px] text-slate-300">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Yield on Cost: {snowballResult.yieldOnCostAnnualPct}% a.a.
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Preço Teto (Bazin {desiredYieldPct}%)</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-primary">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Preço Teto (Bazin {desiredYieldPct}%)</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-primary sm:text-2xl">
                     {formatCurrency(snowballResult.ceilingPrice)}
                   </p>
                   <p
                     className={cn(
-                      "mt-1 text-[11px]",
+                      "mt-1 text-xs",
                       snowballResult.marginOfSafetyPct >= 0 ? "text-gain" : "text-loss",
                     )}
                   >
@@ -1929,28 +1933,28 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
                     {snowballResult.marginOfSafetyPct}% · PM: {formatCurrency(snowballResult.averageCostPerShare)}
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Número Mágico</p>
-                  <p className="metric-value mt-2 text-xl font-semibold">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Número Mágico</p>
+                  <p className="metric-value mt-2 text-xl font-semibold sm:text-2xl">
                     {snowballResult.magicNumberShares} cotas
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Capital: {formatCurrency(snowballResult.magicNumberCapital)}
                   </p>
                 </div>
-                <div className="card p-4">
-                  <p className="text-xs text-muted-foreground">Patrimônio acumulado</p>
-                  <p className="metric-value mt-2 text-xl font-semibold text-gain">
+                <div className="card p-4 sm:p-5">
+                  <p className="text-xs font-medium text-muted-foreground">Patrimônio acumulado</p>
+                  <p className="metric-value mt-2 text-xl font-semibold text-gain sm:text-2xl">
                     {formatCurrency(snowballResult.finalPatrimony)}
                   </p>
-                  <p className="mt-1 text-[11px] text-muted-foreground">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Dividendos: {formatCurrency(snowballResult.cumulativeDividends)} · {snowballResult.finalShares} cotas
                   </p>
                 </div>
               </div>
 
-              <div className="card p-5">
-                <h3 className="mb-4 text-sm font-semibold">
+              <div className="card p-5 sm:p-6">
+                <h3 className="mb-4 text-base font-semibold tracking-tight">
                   Evolução do patrimônio e dividendos reinvestidos
                 </h3>
                 <EvolutionChart
@@ -1967,7 +1971,7 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
             <div className="card space-y-4 p-5 sm:p-6">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="text-base font-semibold">
+                  <h3 className="text-base font-semibold tracking-tight">
                     Simulação de DCA, Custo Médio e Preço-Alvo em Criptoativos
                   </h3>
                   <p className="text-xs text-muted-foreground">
@@ -1989,7 +1993,7 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border bg-background/60 p-3.5">
+                <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
                   <p className="text-xs text-muted-foreground">No Preço-Alvo ({formatCurrency(cryptoResult.targetPriceBrl)})</p>
                   <p className="metric-value mt-1 text-xl font-semibold text-primary">
                     {formatCurrency(cryptoResult.targetValueBrl)}
@@ -2004,7 +2008,7 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
                     {formatCurrency(cryptoResult.targetGainBrl)} ({cryptoResult.targetGainPct}%)
                   </p>
                 </div>
-                <div className="rounded-2xl border bg-background/60 p-3.5 text-xs text-muted-foreground">
+                <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4 text-xs text-muted-foreground">
                   <p className="font-semibold text-foreground">Gestão de Risco & Exposição</p>
                   <p className="mt-1 leading-5">{cryptoResult.riskAlert}</p>
                 </div>
@@ -2012,9 +2016,9 @@ export function InvestmentCalculator({ initialTab }: { initialTab?: string }) {
 
               <div className="grid gap-3.5 sm:grid-cols-3">
                 {cryptoResult.scenarios.map((sc) => (
-                  <div key={sc.name} className="rounded-2xl border bg-background/60 p-4">
+                  <div key={sc.name} className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
                     <p className="text-xs font-semibold">{sc.name}</p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       Alvo: {formatCurrency(sc.targetPrice)} ({sc.changePct > 0 ? `+${sc.changePct}%` : `${sc.changePct}%`})
                     </p>
                     <p className="metric-value mt-2 text-xl font-semibold">

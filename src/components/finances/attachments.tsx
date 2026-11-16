@@ -23,7 +23,7 @@ export function Attachments({ transactionId, data }: { transactionId: string; da
         type="file"
         accept="application/pdf,image/png,image/jpeg,image/webp"
         disabled={busy}
-        className="input cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-primary/10 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-primary"
+        className="input cursor-pointer file:mr-3 file:rounded-lg file:border-0 file:bg-primary/12 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-primary"
         onChange={async (e) => {
           const file = e.target.files?.[0];
           if (!file) return;
@@ -47,10 +47,10 @@ export function Attachments({ transactionId, data }: { transactionId: string; da
       />
 
       {files.map((f) => (
-        <div key={f.id} className="rounded-xl border bg-surface-subtle/50 p-3.5">
+        <div key={f.id} className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
           <div className="flex items-center gap-2.5">
             <FileText className="size-4 shrink-0 text-primary" />
-            <p className="truncate text-sm font-medium">{text(f.name)}</p>
+            <p className="truncate text-sm font-medium text-foreground">{text(f.name)}</p>
           </div>
           <div className="mt-3 flex gap-2">
             <Button
@@ -74,7 +74,7 @@ export function Attachments({ transactionId, data }: { transactionId: string; da
             </Button>
           </div>
           {confirm === f.id && (
-            <div className="mt-3 flex items-center justify-between gap-2 border-t pt-3">
+            <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-3">
               <p className="text-xs text-muted-foreground">Excluir este anexo permanentemente?</p>
               <Button
                 size="sm"

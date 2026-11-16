@@ -11,7 +11,7 @@ export function Providers({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: true },
-          mutations: { retry: false },
+        mutations: { retry: false },
         },
       }),
   );
@@ -27,10 +27,10 @@ export function Providers({ children }: { children: ReactNode }) {
           toastOptions={{
             classNames: {
               toast:
-                "!rounded-2xl !border !border-border !bg-card !text-foreground !shadow-lg !font-sans",
+                "glass-overlay !rounded-2xl !border !border-glass-border !text-foreground !shadow-xl !font-sans",
               title: "!text-sm !font-semibold",
               description: "!text-xs !text-muted-foreground",
-              closeButton: "!border-border !bg-card !text-muted-foreground hover:!text-foreground",
+              closeButton: "!border-glass-border !bg-glass-light-bg !text-muted-foreground hover:!text-foreground",
             },
           }}
         />

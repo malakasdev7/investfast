@@ -200,7 +200,7 @@ export function CanIBuyPage({
     <div className="animate-fade-in space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+          <p className="section-kicker">
             Decisão consciente antes de aportar
           </p>
           <h1 className="page-heading">Posso comprar?</h1>
@@ -229,13 +229,11 @@ export function CanIBuyPage({
       <div className="grid gap-6 xl:grid-cols-[1.05fr_1.35fr]">
         {/* Coluna Esquerda: Parâmetros da Compra */}
         <section className="card space-y-4 p-5 sm:p-6">
-          <div className="flex items-center justify-between border-b pb-3.5">
-            <div className="flex items-center gap-2">
-              <span className="rounded-xl bg-primary/10 p-2 text-primary">
-                <Scale className="size-4" />
-              </span>
+          <div className="flex items-center justify-between border-b border-border pb-3.5">
+            <div className="flex items-center gap-2.5">
+              <Scale className="size-5 text-primary" />
               <div>
-                <h2 className="text-sm font-semibold">Configurar compra pretendida</h2>
+                <h2 className="text-base font-semibold tracking-tight">Configurar compra pretendida</h2>
                 <p className="text-xs text-muted-foreground">
                   Escolha um ativo da sua carteira, do mercado ou digite qualquer código
                 </p>
@@ -253,10 +251,10 @@ export function CanIBuyPage({
                   selectPreset("TESOURO SELIC", "Tesouro Selic Pós-fixado", "treasury")
                 }
                 className={cn(
-                  "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors",
+                  "cursor-pointer rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
                   ticker === "TESOURO SELIC"
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "bg-background text-muted-foreground hover:text-foreground",
+                    ? "border-primary/40 bg-primary/12 text-primary font-semibold"
+                    : "border-glass-border bg-glass-light-bg text-muted-foreground hover:border-border-strong hover:text-foreground",
                 )}
               >
                 Tesouro Selic
@@ -265,10 +263,10 @@ export function CanIBuyPage({
                 type="button"
                 onClick={() => selectPreset("CDI 100%", "Caixinha / CDB Liquidez Diária", "cdi")}
                 className={cn(
-                  "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors",
+                  "cursor-pointer rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
                   ticker === "CDI 100%"
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "bg-background text-muted-foreground hover:text-foreground",
+                    ? "border-primary/40 bg-primary/12 text-primary font-semibold"
+                    : "border-glass-border bg-glass-light-bg text-muted-foreground hover:border-border-strong hover:text-foreground",
                 )}
               >
                 CDI 100%
@@ -281,10 +279,10 @@ export function CanIBuyPage({
                     selectPreset(text(a.ticker), text(a.name), text(a.asset_class) || "stock")
                   }
                   className={cn(
-                    "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors",
+                    "cursor-pointer rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
                     ticker === text(a.ticker).toUpperCase()
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "bg-background text-muted-foreground hover:text-foreground",
+                      ? "border-primary/40 bg-primary/12 text-primary font-semibold"
+                      : "border-glass-border bg-glass-light-bg text-muted-foreground hover:border-border-strong hover:text-foreground",
                   )}
                 >
                   {text(a.ticker)} (Carteira)
@@ -296,10 +294,10 @@ export function CanIBuyPage({
                   type="button"
                   onClick={() => selectPreset(m.ticker, m.name, m.asset_class)}
                   className={cn(
-                    "rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors",
+                    "cursor-pointer rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors",
                     ticker === m.ticker.toUpperCase()
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "bg-background text-muted-foreground hover:text-foreground",
+                      ? "border-primary/40 bg-primary/12 text-primary font-semibold"
+                      : "border-glass-border bg-glass-light-bg text-muted-foreground hover:border-border-strong hover:text-foreground",
                   )}
                 >
                   {m.ticker}
@@ -485,21 +483,21 @@ export function CanIBuyPage({
             <p className="mt-4 text-sm leading-6 text-foreground">{evaluation.headline}</p>
 
             {/* Impacto numérico rápido */}
-            <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-              <div className="rounded-xl border bg-card/90 p-3">
-                <p className="text-[11px] text-muted-foreground">Saldo após compra</p>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-3.5">
+                <p className="text-xs text-muted-foreground">Saldo após compra</p>
                 <p
                   className={cn(
-                    "tabular mt-1 text-sm font-semibold",
+                    "tabular mt-1.5 text-base font-semibold",
                     evaluation.portfolioImpact.cashAfter < 0 ? "text-loss" : "text-foreground",
                   )}
                 >
                   {formatCurrency(evaluation.portfolioImpact.cashAfter)}
                 </p>
               </div>
-              <div className="rounded-xl border bg-card/90 p-3">
-                <p className="text-[11px] text-muted-foreground">Peso do ativo</p>
-                <p className="tabular mt-1 text-sm font-semibold">
+              <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-3.5">
+                <p className="text-xs text-muted-foreground">Peso do ativo</p>
+                <p className="tabular mt-1.5 text-base font-semibold">
                   {evaluation.portfolioImpact.assetShareBeforePct}% →{" "}
                   <span
                     className={cn(
@@ -510,24 +508,24 @@ export function CanIBuyPage({
                   </span>
                 </p>
               </div>
-              <div className="rounded-xl border bg-card/90 p-3">
-                <p className="text-[11px] text-muted-foreground">Máximo sugerido</p>
-                <p className="tabular mt-1 text-sm font-semibold text-primary">
+              <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-3.5">
+                <p className="text-xs text-muted-foreground">Máximo sugerido</p>
+                <p className="tabular mt-1.5 text-base font-semibold text-primary">
                   {evaluation.maxRecommendedAmount !== null
                     ? formatCurrency(evaluation.maxRecommendedAmount)
                     : "—"}
                 </p>
               </div>
-              <div className="rounded-xl border bg-card/90 p-3">
-                <p className="text-[11px] text-muted-foreground">Carteira investida</p>
-                <p className="tabular mt-1 text-sm font-semibold">
+              <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-3.5">
+                <p className="text-xs text-muted-foreground">Carteira investida</p>
+                <p className="tabular mt-1.5 text-base font-semibold">
                   {formatCurrency(evaluation.portfolioImpact.afterTotal)}
                 </p>
               </div>
             </div>
 
             {evaluation.portfolioImpact.concentrationAlert && (
-              <div className="mt-3 rounded-xl border border-warning/35 bg-warning/10 px-3.5 py-2.5 text-xs text-foreground">
+              <div className="mt-3.5 rounded-2xl border border-warning/35 bg-warning/10 px-4 py-3 text-xs text-foreground">
                 <strong>Alerta de concentração:</strong> após esta compra,{" "}
                 <span className="font-semibold">{ticker.toUpperCase()}</span> representará{" "}
                 <span className="font-semibold">
@@ -537,7 +535,7 @@ export function CanIBuyPage({
               </div>
             )}
 
-            <div className="mt-3 rounded-xl border bg-card/70 px-3.5 py-2.5 text-xs text-muted-foreground">
+            <div className="mt-3.5 rounded-2xl border border-glass-border bg-glass-light-bg px-4 py-3 text-xs text-muted-foreground">
               <strong className="text-foreground">Impacto no orçamento:</strong>{" "}
               {evaluation.budgetImpact.summary} (Peso da classe:{" "}
               {evaluation.portfolioImpact.classShareBeforePct}% →{" "}

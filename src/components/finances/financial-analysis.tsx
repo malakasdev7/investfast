@@ -31,11 +31,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const CLASS_COLORS = [
-  "#2563eb",
-  "#10b981",
-  "#8b5cf6",
-  "#f59e0b",
-  "#ec4899",
+  "#38bdf8",
+  "#2dd4bf",
+  "#60a5fa",
+  "#fbbf24",
+  "#0284c7",
   "#64748b",
 ];
 
@@ -102,14 +102,14 @@ export function FinancialAnalysis({
   return (
     <div className="space-y-6">
       {/* 1. Resumo Financeiro Executivo */}
-      <section className="card relative overflow-hidden border-primary/25 bg-gradient-to-br from-primary/[0.06] via-card to-card p-5 sm:p-6">
+      <section className="hero-metric relative overflow-hidden rounded-3xl p-6 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+          <div className="max-w-3xl space-y-2.5">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/12 px-3 py-1 text-xs font-semibold text-primary">
               <Lightbulb className="size-3.5" />
               Diagnóstico Financeiro Baseado em Dados Reais
             </div>
-            <h2 className="text-lg font-semibold tracking-tight sm:text-xl">
+            <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Patrimônio consolidado de {formatCurrency(report.summary.wealth)} com taxa de poupança de{" "}
               {report.summary.savingsRatePct.toFixed(1)}% no período
             </h2>
@@ -167,24 +167,22 @@ export function FinancialAnalysis({
       {/* 2. Capacidade de Investimento + Reserva de Emergência + Risco Estimado */}
       <div className="grid gap-4 md:grid-cols-3">
         {/* Capacidade de Investimento */}
-        <article className="card flex flex-col justify-between p-5">
+        <article className="card flex flex-col justify-between p-5 sm:p-6">
           <div>
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Capacidade de Aporte
               </span>
-              <span className="rounded-xl bg-primary/10 p-2 text-primary">
-                <Wallet className="size-4" />
-              </span>
+              <Wallet className="size-4 text-primary" />
             </div>
-            <p className="metric-value mt-3 text-2xl font-semibold text-primary">
+            <p className="metric-value mt-3 text-2xl font-semibold text-primary sm:text-3xl">
               {formatCurrency(report.capacity.safeMonthlyInvestment)}
               <span className="text-xs font-normal text-muted-foreground"> /mês</span>
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">
+            <p className="mt-1.5 text-xs text-muted-foreground">
               Equivale a {report.capacity.currentCapacityPct.toFixed(1)}% da sua renda mensal média (referência ideal: 20%)
             </p>
-            <dl className="mt-4 space-y-2 border-t pt-3 text-xs">
+            <dl className="mt-4 space-y-2 border-t border-border pt-3.5 text-xs">
               <div className="flex justify-between">
                 <dt className="text-muted-foreground">Renda média (3m):</dt>
                 <dd className="tabular font-medium">
@@ -214,27 +212,25 @@ export function FinancialAnalysis({
         </article>
 
         {/* Reserva de Emergência */}
-        <article className="card flex flex-col justify-between p-5">
+        <article className="card flex flex-col justify-between p-5 sm:p-6">
           <div>
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Reserva de Emergência
               </span>
-              <span
+              <ShieldCheck
                 className={cn(
-                  "rounded-xl p-2",
+                  "size-4",
                   report.emergency.status === "adequada"
-                    ? "bg-gain/10 text-gain"
+                    ? "text-gain"
                     : report.emergency.status === "parcial"
-                      ? "bg-warning/10 text-warning"
-                      : "bg-loss/10 text-loss",
+                      ? "text-warning"
+                      : "text-loss",
                 )}
-              >
-                <ShieldCheck className="size-4" />
-              </span>
+              />
             </div>
-            <div className="mt-3 flex items-baseline gap-2">
-              <p className="metric-value text-2xl font-semibold">
+            <div className="mt-3 flex items-baseline gap-2.5">
+              <p className="metric-value text-2xl font-semibold sm:text-3xl">
                 {report.emergency.monthsCovered.toFixed(1)} meses
               </p>
               <span
@@ -256,7 +252,7 @@ export function FinancialAnalysis({
                       : "Sem base"}
               </span>
             </div>
-            <div className="my-3 h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div className="my-3.5 h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
                 className={cn(
                   "h-full rounded-full transition-all",
@@ -293,32 +289,30 @@ export function FinancialAnalysis({
         </article>
 
         {/* Risco Estimado */}
-        <article className="card flex flex-col justify-between p-5">
+        <article className="card flex flex-col justify-between p-5 sm:p-6">
           <div>
             <div className="flex items-center justify-between gap-2">
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Risco Estimado da Carteira
               </span>
-              <span className="rounded-xl bg-primary/10 p-2 text-primary">
-                <Gauge className="size-4" />
-              </span>
+              <Gauge className="size-4 text-primary" />
             </div>
             <div className="mt-3 flex items-baseline gap-2.5">
-              <p className="metric-value text-2xl font-semibold">{report.risk.profile}</p>
+              <p className="metric-value text-2xl font-semibold sm:text-3xl">{report.risk.profile}</p>
               <span className="badge">Score {report.risk.score}/100</span>
             </div>
             <p className="mt-2 text-xs leading-5 text-muted-foreground">{report.risk.explanation}</p>
-            <div className="mt-3 grid grid-cols-3 gap-2 border-t pt-3 text-center text-xs">
-              <div className="rounded-xl bg-muted/50 p-2">
-                <p className="text-[10px] text-muted-foreground">Renda Fixa</p>
+            <div className="mt-3.5 grid grid-cols-3 gap-2 border-t border-border pt-3.5 text-center text-xs">
+              <div className="rounded-xl border border-glass-border bg-glass-light-bg p-2">
+                <p className="text-xs text-muted-foreground">Renda Fixa</p>
                 <p className="tabular mt-0.5 font-semibold">{report.risk.fixedIncomePct}%</p>
               </div>
-              <div className="rounded-xl bg-muted/50 p-2">
-                <p className="text-[10px] text-muted-foreground">Variável</p>
+              <div className="rounded-xl border border-glass-border bg-glass-light-bg p-2">
+                <p className="text-xs text-muted-foreground">Variável</p>
                 <p className="tabular mt-0.5 font-semibold">{report.risk.variableIncomePct}%</p>
               </div>
-              <div className="rounded-xl bg-muted/50 p-2">
-                <p className="text-[10px] text-muted-foreground">Cripto</p>
+              <div className="rounded-xl border border-glass-border bg-glass-light-bg p-2">
+                <p className="text-xs text-muted-foreground">Cripto</p>
                 <p className="tabular mt-0.5 font-semibold">{report.risk.cryptoPct}%</p>
               </div>
             </div>
@@ -349,7 +343,7 @@ export function FinancialAnalysis({
             {report.recommendations.map((rec) => (
               <div
                 key={rec.id}
-                className="flex flex-col justify-between rounded-2xl border bg-background/60 p-4 transition-colors hover:border-primary/30"
+                className="flex flex-col justify-between rounded-2xl border border-glass-border bg-glass-light-bg p-4 transition-colors hover:border-primary/35"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2">
@@ -406,7 +400,7 @@ export function FinancialAnalysis({
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl border bg-background/60 p-3.5">
+            <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
               <p className="text-xs text-muted-foreground">Variação de Receitas</p>
               <p className="tabular mt-1 text-lg font-semibold">
                 {formatCurrency(report.comparison.currentIncome)}
@@ -433,7 +427,7 @@ export function FinancialAnalysis({
               </p>
             </div>
 
-            <div className="rounded-xl border bg-background/60 p-3.5">
+            <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
               <p className="text-xs text-muted-foreground">Variação de Despesas</p>
               <p className="tabular mt-1 text-lg font-semibold">
                 {formatCurrency(report.comparison.currentExpense)}
@@ -524,7 +518,7 @@ export function FinancialAnalysis({
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border bg-background/60 p-3.5">
+              <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
                 <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CreditCard className="size-3.5 text-primary" />
                   Saldo em cartões
@@ -532,17 +526,17 @@ export function FinancialAnalysis({
                 <p className="tabular mt-1.5 text-lg font-semibold">
                   {formatCurrency(report.debts.creditCardBalance)}
                 </p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Faturas pagas no período: {formatCurrency(report.debts.cardPaymentsInPeriod)}
                 </p>
               </div>
 
-              <div className="rounded-xl border bg-background/60 p-3.5">
+              <div className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
                 <p className="text-xs text-muted-foreground">Comprometimento da renda</p>
                 <p className="tabular mt-1.5 text-lg font-semibold">
                   {report.debts.debtToIncomePct.toFixed(1)}%
                 </p>
-                <p className="mt-1 text-[11px] text-muted-foreground">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Limite saudável recomendado: até 25%
                 </p>
               </div>
@@ -673,14 +667,14 @@ export function FinancialAnalysis({
                   color: "bg-warning",
                 },
               ].map((tier) => (
-                <div key={tier.label} className="rounded-xl border bg-background/60 p-3.5">
-                  <div className="flex items-center justify-between text-xs font-semibold">
+                <div key={tier.label} className="rounded-2xl border border-glass-border bg-glass-light-bg p-4">
+                  <div className="flex items-center justify-between text-xs font-semibold sm:text-sm">
                     <span>{tier.label}</span>
                     <span className="tabular">
                       {formatCurrency(tier.amount)} ({tier.pct}%)
                     </span>
                   </div>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">{tier.desc}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{tier.desc}</p>
                   <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-muted">
                     <div
                       className={cn("h-full rounded-full", tier.color)}

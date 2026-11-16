@@ -298,7 +298,7 @@ export function AiAssistant() {
     <div className="animate-fade-in space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
+          <p className="section-kicker">
             Inteligência Artificial Segura
           </p>
           <h1 className="page-heading">Assistente Financeiro InvestFast</h1>
@@ -449,7 +449,7 @@ export function AiAssistant() {
             </div>
           </div>
 
-          <div className="mt-6 rounded-xl border bg-muted/40 p-3 text-[11px] leading-4 text-muted-foreground">
+          <div className="mt-6 rounded-2xl border border-glass-border bg-glass-light-bg p-3.5 text-xs leading-5 text-muted-foreground">
             <p className="flex items-center gap-1.5 font-semibold text-foreground">
               <ShieldCheck className="size-3.5 text-gain" />
               Privacidade & Aviso Legal
@@ -461,29 +461,29 @@ export function AiAssistant() {
         </aside>
 
         {/* Área Principal do Chat */}
-        <section className="card flex min-h-[560px] flex-col justify-between overflow-hidden">
-          <div className="flex-1 space-y-4 overflow-y-auto p-4 sm:p-6">
+        <section className="card flex min-h-[580px] flex-col justify-between overflow-hidden">
+          <div className="flex-1 space-y-4 overflow-y-auto p-5 sm:p-6">
             {messages.length === 0 ? (
               <div className="mx-auto max-w-2xl space-y-5 py-8 text-center">
-                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <div className="mx-auto flex size-12 items-center justify-center rounded-2xl border border-primary/30 bg-primary/12 text-primary">
                   <Sparkles className="size-6" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold">
+                  <h2 className="text-lg font-semibold tracking-tight">
                     Como posso ajudar nas suas decisões financeiras hoje?
                   </h2>
-                  <p className="mt-1 text-xs text-muted-foreground">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Consulto em tempo real sua carteira, contas, orçamentos, metas e reserva de emergência.
                   </p>
                 </div>
 
-                <div className="grid gap-2 text-left sm:grid-cols-2">
+                <div className="grid gap-2.5 text-left sm:grid-cols-2">
                   {QUICK_PROMPTS.map((q) => (
                     <button
                       key={q}
                       type="button"
                       onClick={() => void sendMessage(q)}
-                      className="rounded-2xl border bg-background/70 p-3.5 text-xs font-medium text-foreground transition-all hover:border-primary/40 hover:bg-primary/[0.03]"
+                      className="cursor-pointer rounded-2xl border border-glass-border bg-glass-light-bg p-4 text-xs font-medium text-foreground transition-all hover:border-primary/40 hover:bg-glass-medium-bg sm:text-sm"
                     >
                       {q}
                     </button>
@@ -503,8 +503,8 @@ export function AiAssistant() {
                     className={cn(
                       "max-w-3xl rounded-2xl px-4 py-3.5 text-sm leading-6",
                       msg.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "border bg-background/80 text-foreground",
+                        ? "glass-control glass-control-primary"
+                        : "border border-glass-border bg-glass-light-bg text-foreground",
                     )}
                   >
                     {msg.role === "assistant" && msg.toolsUsed && msg.toolsUsed.length > 0 && (
@@ -512,7 +512,7 @@ export function AiAssistant() {
                         {msg.toolsUsed.map((tool) => (
                           <span
                             key={tool}
-                            className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-semibold text-primary"
+                            className="inline-flex items-center gap-1 rounded-full border border-primary/25 bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary"
                           >
                             <Wrench className="size-3" />
                             {TOOL_LABELS[tool] || tool}
@@ -525,7 +525,7 @@ export function AiAssistant() {
 
                     {/* Cartão de Confirmação Explícita antes de alterar dados */}
                     {msg.proposedAction && (
-                      <div className="mt-4 rounded-xl border border-primary/30 bg-card p-3.5">
+                      <div className="mt-4 rounded-2xl border border-primary/35 bg-glass-frosted-bg p-4">
                         <div className="flex items-center justify-between gap-2">
                           <span className="text-xs font-semibold text-primary">
                             Confirmação obrigatória · {msg.proposedAction.title}
@@ -572,7 +572,7 @@ export function AiAssistant() {
               e.preventDefault();
               void sendMessage();
             }}
-            className="border-t bg-card p-3.5 sm:p-4"
+            className="border-t border-border bg-glass-light-bg p-4"
           >
             <div className="flex items-center gap-2">
               <input

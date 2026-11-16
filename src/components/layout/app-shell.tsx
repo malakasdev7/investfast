@@ -207,33 +207,30 @@ export function AppShell({
 
   const sidebar = (
     <>
-      <div className="flex items-center justify-between px-5 py-5 border-b border-white/20 dark:border-white/10">
-        <Link href="/dashboard" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
-          <span className="brand-mark flex size-8 items-center justify-center rounded-xl shadow-xs">
-            <ArrowUpRight className="size-4.5 stroke-[2.25]" />
+      <div className="flex items-center justify-between border-b border-border px-5 py-4">
+        <Link href="/dashboard" className="flex items-center gap-2.5 text-base font-semibold tracking-tight">
+          <span className="brand-mark flex size-8 items-center justify-center rounded-xl">
+            <ArrowUpRight className="size-4 stroke-[2.25]" />
           </span>
-          <span className="tracking-tight">InvestFast</span>
+          <span className="tracking-tight text-foreground">InvestFast</span>
         </Link>
-        <span className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-primary">
-          PRO
-        </span>
       </div>
 
-      <div className="px-4 py-3.5">
+      <div className="px-4 pt-3.5 pb-2">
         <Button
           type="button"
           onClick={() => setQuickEntity({ entity: "transactions", title: "Nova transação" })}
-          className="w-full justify-center shadow-md shadow-primary/15"
+          className="w-full justify-center"
         >
           <Plus className="size-4" />
           Novo lançamento
         </Button>
       </div>
 
-      <nav aria-label="Navegação principal" className="flex-1 space-y-5 overflow-y-auto px-3 py-1">
+      <nav aria-label="Navegação principal" className="no-scrollbar flex-1 space-y-5 overflow-y-auto px-3 py-2.5">
         {sidebarGroups.map((group) => (
           <div key={group.title} className="space-y-1">
-            <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
+            <div className="px-3 pb-1 text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               {group.title}
             </div>
             {group.items.map(({ label, href, Icon }) => {
@@ -244,16 +241,16 @@ export function AppShell({
                   key={href}
                   href={href}
                   className={cn(
-                    "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] transition-all duration-200",
+                    "group relative flex items-center gap-3 rounded-xl border border-transparent px-3 py-2 text-sm transition-colors duration-150",
                     active
-                      ? "bg-primary/12 font-semibold text-primary border border-primary/20 shadow-2xs backdrop-blur-md"
-                      : "font-medium text-muted-foreground hover:bg-white/40 dark:hover:bg-white/5 hover:text-foreground",
+                      ? "glass-nav-active font-semibold text-foreground"
+                      : "font-medium text-muted-foreground hover:bg-glass-light-bg hover:text-foreground",
                   )}
                 >
                   {active && (
                     <span
                       aria-hidden="true"
-                      className="absolute left-0 top-1/2 h-4.5 w-1 -translate-y-1/2 rounded-full bg-primary shadow-xs"
+                      className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-primary"
                     />
                   )}
                   <Icon
@@ -270,14 +267,14 @@ export function AppShell({
         ))}
       </nav>
 
-      <div className="space-y-1 border-t border-white/20 dark:border-white/10 p-3">
+      <div className="space-y-1 border-t border-border p-3">
         <Link
           href="/configuracoes"
           className={cn(
-            "flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-colors",
+            "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
             path === "/configuracoes"
-              ? "bg-primary/12 font-semibold text-primary border border-primary/20"
-              : "text-muted-foreground hover:bg-white/40 dark:hover:bg-white/5 hover:text-foreground",
+              ? "glass-nav-active font-semibold text-foreground"
+              : "text-muted-foreground hover:bg-glass-light-bg hover:text-foreground",
           )}
         >
           <Settings className="size-4 shrink-0" />
@@ -285,7 +282,7 @@ export function AppShell({
         </Link>
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-loss/10 hover:text-loss"
+          className="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-loss/10 hover:text-loss"
         >
           <LogOut className="size-4 shrink-0" />
           Sair da conta
@@ -296,21 +293,21 @@ export function AppShell({
 
   return (
     <div className="app-canvas min-h-dvh">
-      {/* Sidebar Flutuante com Liquid Glass Leve */}
-      <aside className="app-sidebar fixed inset-y-0 left-0 z-30 hidden w-64 flex-col lg:flex">
+      {/* Sidebar com material glass-navigation */}
+      <aside className="app-sidebar glass-navigation fixed inset-y-0 left-0 z-30 hidden w-60 flex-col lg:flex">
         {sidebar}
       </aside>
 
-      <div className="lg:pl-64">
-        {/* Header com Liquid Glass Superior */}
-        <header className="app-header sticky top-0 z-20 flex h-14 items-center justify-between gap-3 px-4 md:h-[68px] md:px-8">
+      <div className="lg:pl-60">
+        {/* Header limpo com material glass-navigation */}
+        <header className="app-header glass-navigation sticky top-0 z-20 flex h-14 items-center justify-between gap-3 px-4 md:h-16 md:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-2.5">
             <Link
               href="/dashboard"
               className="flex items-center gap-2 lg:hidden"
               aria-label="Início InvestFast"
             >
-              <span className="brand-mark flex size-8 items-center justify-center rounded-xl shadow-xs">
+              <span className="brand-mark flex size-8 items-center justify-center rounded-xl">
                 <ArrowUpRight className="size-4" />
               </span>
             </Link>
@@ -318,68 +315,47 @@ export function AppShell({
               InvestFast
             </span>
             <ChevronRight className="hidden size-3.5 text-muted-foreground/60 sm:block" />
-            <span className="truncate text-sm font-semibold tracking-tight md:text-[15px]">
+            <span className="truncate text-sm font-semibold tracking-tight text-foreground md:text-base">
               {current}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
             <Link
-              href="/posso-comprar"
-              aria-label="Posso comprar?"
-              className={cn(
-                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all duration-200 lg:inline-flex backdrop-blur-md shadow-2xs",
-                path === "/posso-comprar"
-                  ? "border-primary/40 bg-primary/12 text-primary font-semibold shadow-xs"
-                  : "border-glass-border bg-glass-light-bg text-muted-foreground hover:text-foreground hover:bg-glass-medium-bg",
-              )}
-            >
-              <Scale className="size-3.5 text-primary" />
-              Posso comprar?
-            </Link>
-            <Link
-              href="/calculadora"
-              aria-label="Calculadora de investimentos"
-              className={cn(
-                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all duration-200 md:inline-flex backdrop-blur-md shadow-2xs",
-                path === "/calculadora"
-                  ? "border-primary/40 bg-primary/12 text-primary font-semibold shadow-xs"
-                  : "border-glass-border bg-glass-light-bg text-muted-foreground hover:text-foreground hover:bg-glass-medium-bg",
-              )}
-            >
-              <Calculator className="size-3.5 text-primary" />
-              Calculadora
-            </Link>
-            <Link
               href="/assistente"
               aria-label="Assistente IA"
               className={cn(
-                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:inline-flex backdrop-blur-md shadow-2xs",
+                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors sm:inline-flex",
                 path === "/assistente"
-                  ? "border-primary/40 bg-primary/12 text-primary font-semibold shadow-xs"
-                  : "border-glass-border bg-glass-light-bg text-muted-foreground hover:text-foreground hover:bg-glass-medium-bg",
+                  ? "glass-nav-active font-semibold text-primary"
+                  : "glass-control text-muted-foreground hover:text-foreground",
               )}
             >
               <Sparkles className="size-3.5 text-primary" />
               Assistente IA
             </Link>
+
             <Link
               href="/analises"
               aria-label="Ver alertas e análises"
+              title="Diagnóstico e alertas"
               className={cn(
-                "flex size-9 items-center justify-center rounded-xl border border-transparent text-muted-foreground transition-all duration-200 hover:border-glass-border hover:bg-glass-light-bg hover:text-foreground backdrop-blur-md",
-                path === "/analises" && "border-primary/30 bg-primary/12 text-primary shadow-xs",
+                "glass-control flex size-9 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:text-foreground",
+                path === "/analises" && "glass-nav-active text-primary",
               )}
             >
-              <Bell className="size-[17px]" />
+              <Bell className="size-4" />
             </Link>
+
             <ThemeToggle />
-            <div className="mx-0.5 hidden h-5 w-px bg-white/20 dark:bg-white/10 sm:block" />
+
+            <div className="mx-0.5 hidden h-5 w-px bg-border sm:block" />
+
             <Link
               href="/configuracoes"
-              className="flex items-center gap-2.5 rounded-xl py-1 pl-1 pr-2 transition-all duration-200 hover:bg-white/40 dark:hover:bg-white/5"
+              className="flex items-center gap-2.5 rounded-xl py-1 pl-1 pr-2 transition-colors hover:bg-muted/50"
             >
-              <span className="flex size-8 items-center justify-center rounded-full bg-primary/12 border border-primary/25 text-xs font-semibold text-primary shadow-2xs">
+              <span className="flex size-8 items-center justify-center rounded-full border border-primary/30 bg-primary/12 text-xs font-semibold text-primary">
                 {initials}
               </span>
               <span className="hidden text-xs font-medium text-foreground xl:block">
@@ -389,15 +365,15 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="mx-auto min-w-0 max-w-[1440px] px-4 pt-5 pb-[calc(6.5rem_+_env(safe-area-inset-bottom))] sm:px-6 md:px-8 md:pt-7 lg:pb-10">
+        <main className="mx-auto w-full min-w-0 max-w-[1480px] px-4 pt-6 pb-[calc(6.5rem_+_env(safe-area-inset-bottom))] sm:px-6 lg:px-10 lg:pt-8 lg:pb-12">
           {children}
         </main>
       </div>
 
-      {/* Quick Action Bottom Sheet (Mobile) com Liquid Glass */}
+      {/* Quick Action Bottom Sheet (Mobile) com glass-overlay */}
       {quickOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-md lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden"
           onClick={() => setQuickOpen(false)}
         >
           <div
@@ -405,18 +381,18 @@ export function AppShell({
             aria-modal="true"
             aria-label="Novo lançamento rápido"
             onClick={(e) => e.stopPropagation()}
-            className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t border-white/30 dark:border-white/15 bg-white/85 dark:bg-slate-900/85 p-5 pb-[calc(5.5rem_+_env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-2xl"
+            className="glass-overlay fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t border-glass-border p-5 pb-[calc(5.5rem_+_env(safe-area-inset-bottom))]"
           >
             <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-muted-foreground/30" />
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h2 className="text-base font-semibold tracking-tight">Ação rápida</h2>
-                <p className="text-xs text-muted-foreground">O que você deseja registrar ou avaliar agora?</p>
+                <p className="text-xs text-muted-foreground">O que você deseja registrar agora?</p>
               </div>
               <button
                 onClick={() => setQuickOpen(false)}
                 aria-label="Fechar ações rápidas"
-                className="rounded-full bg-muted/80 p-2 text-muted-foreground hover:text-foreground backdrop-blur-md"
+                className="rounded-full bg-muted/80 p-2 text-muted-foreground hover:text-foreground"
               >
                 <X className="size-4" />
               </button>
@@ -428,28 +404,24 @@ export function AppShell({
                   title: "Nova transação",
                   desc: "Receita, despesa ou transferência",
                   Icon: ArrowLeftRight,
-                  color: "bg-primary/10 text-primary border-primary/20",
                 },
                 {
                   entity: "investment_transactions",
                   title: "Nova operação",
                   desc: "Compra, venda ou provento",
                   Icon: Coins,
-                  color: "bg-primary/10 text-primary border-primary/20",
                 },
                 {
                   entity: "accounts",
                   title: "Nova conta",
                   desc: "Banco, corretora ou carteira",
                   Icon: Wallet,
-                  color: "bg-muted text-foreground border-white/20 dark:border-white/10",
                 },
                 {
                   entity: "goal_contributions",
                   title: "Novo aporte",
                   desc: "Guardar dinheiro em uma meta",
                   Icon: PiggyBank,
-                  color: "bg-muted text-foreground border-white/20 dark:border-white/10",
                 },
               ].map((item) => (
                 <button
@@ -458,13 +430,13 @@ export function AppShell({
                     setQuickOpen(false);
                     setQuickEntity({ entity: item.entity, title: item.title });
                   }}
-                  className="flex flex-col items-start rounded-2xl border border-glass-border bg-glass-light-bg p-3.5 text-left transition-all backdrop-blur-md active:scale-[0.98] hover:bg-glass-medium-bg hover:shadow-xs cursor-pointer"
+                  className="glass-content flex cursor-pointer flex-col items-start rounded-2xl p-3.5 text-left transition-all active:scale-[0.98] hover:border-border-strong"
                 >
-                  <span className={cn("mb-2.5 rounded-xl p-2.5 border", item.color)}>
+                  <span className="mb-2 rounded-xl border border-glass-border bg-glass-light-bg p-2 text-primary">
                     <item.Icon className="size-4" />
                   </span>
                   <span className="text-sm font-semibold">{item.title}</span>
-                  <span className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{item.desc}</span>
+                  <span className="mt-0.5 text-xs leading-4 text-muted-foreground">{item.desc}</span>
                 </button>
               ))}
             </div>
@@ -472,10 +444,10 @@ export function AppShell({
         </div>
       )}
 
-      {/* Mobile Full Hub Menu Sheet ("Menu / Mais") com Liquid Glass */}
+      {/* Mobile Full Hub Menu Sheet ("Menu / Mais") com glass-overlay */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-md lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden"
           onClick={() => setMenuOpen(false)}
         >
           <div
@@ -483,12 +455,12 @@ export function AppShell({
             aria-modal="true"
             aria-label="Menu completo"
             onClick={(e) => e.stopPropagation()}
-            className="fixed inset-x-0 bottom-0 z-50 flex max-h-[86dvh] flex-col rounded-t-3xl border-t border-white/30 dark:border-white/15 bg-white/85 dark:bg-slate-900/85 shadow-2xl backdrop-blur-2xl"
+            className="glass-overlay fixed inset-x-0 bottom-0 z-50 flex max-h-[86dvh] flex-col rounded-t-3xl border-t border-glass-border"
           >
             <div className="mx-auto mt-2.5 h-1.5 w-12 shrink-0 rounded-full bg-muted-foreground/30" />
-            <div className="flex items-center justify-between border-b border-white/20 dark:border-white/10 px-5 py-3.5">
+            <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
               <div className="flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-full bg-primary/12 border border-primary/25 text-sm font-semibold text-primary shadow-xs">
+                <span className="flex size-10 items-center justify-center rounded-full border border-primary/30 bg-primary/12 text-sm font-semibold text-primary">
                   {initials}
                 </span>
                 <div className="min-w-0">
@@ -499,7 +471,7 @@ export function AppShell({
               <button
                 onClick={() => setMenuOpen(false)}
                 aria-label="Fechar menu"
-                className="rounded-full bg-muted/80 p-2 text-muted-foreground hover:text-foreground backdrop-blur-md"
+                className="rounded-full bg-muted/80 p-2 text-muted-foreground hover:text-foreground"
               >
                 <X className="size-4" />
               </button>
@@ -508,7 +480,7 @@ export function AppShell({
             <div className="flex-1 space-y-5 overflow-y-auto px-4 py-4 pb-[calc(6rem_+_env(safe-area-inset-bottom))]">
               {navGroups.map((group) => (
                 <div key={group.title}>
-                  <p className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     {group.title}
                   </p>
                   <div className="grid grid-cols-2 gap-2">
@@ -520,18 +492,18 @@ export function AppShell({
                           href={href}
                           onClick={() => setMenuOpen(false)}
                           className={cn(
-                            "flex items-start gap-2.5 rounded-2xl border p-3 transition-all backdrop-blur-md active:scale-[0.98]",
+                            "flex items-start gap-2.5 rounded-2xl border p-3 transition-all active:scale-[0.98]",
                             active
-                              ? "border-primary/40 bg-primary/15 text-primary shadow-xs"
-                              : "border-glass-border bg-glass-light-bg hover:bg-glass-medium-bg",
+                              ? "border-primary/40 bg-primary/14 text-foreground"
+                              : "border-glass-border bg-glass-light-bg hover:border-border-strong",
                           )}
                         >
                           <span
                             className={cn(
-                              "mt-0.5 rounded-xl p-2 border",
+                              "mt-0.5 rounded-xl p-2",
                               active
-                                ? "bg-primary text-primary-foreground border-primary"
-                                : "bg-muted text-muted-foreground border-white/20 dark:border-white/10",
+                                ? "glass-nav-active text-primary"
+                                : "bg-muted text-muted-foreground",
                             )}
                           >
                             <Icon className="size-4" />
@@ -540,7 +512,7 @@ export function AppShell({
                             <span className="block truncate text-xs font-semibold text-foreground">
                               {label}
                             </span>
-                            <span className="mt-0.5 line-clamp-1 text-[10px] text-muted-foreground">
+                            <span className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground">
                               {desc}
                             </span>
                           </span>
@@ -551,16 +523,16 @@ export function AppShell({
                 </div>
               ))}
 
-              <div className="border-t border-white/20 dark:border-white/10 pt-3">
+              <div className="border-t border-border pt-3">
                 <div className="grid grid-cols-2 gap-2">
                   <Link
                     href="/configuracoes"
                     onClick={() => setMenuOpen(false)}
                     className={cn(
-                      "flex items-center justify-center gap-2 rounded-xl border py-3 text-xs font-semibold transition-all backdrop-blur-md",
+                      "flex items-center justify-center gap-2 rounded-xl border py-3 text-xs font-semibold transition-colors",
                       path === "/configuracoes"
-                        ? "border-primary/40 bg-primary/15 text-primary"
-                        : "border-glass-border bg-glass-light-bg text-foreground hover:bg-glass-medium-bg",
+                        ? "border-primary/40 bg-primary/14 text-primary"
+                        : "border-glass-border bg-glass-light-bg text-foreground hover:border-border-strong",
                     )}
                   >
                     <Settings className="size-4" />
@@ -568,7 +540,7 @@ export function AppShell({
                   </Link>
                   <button
                     onClick={logout}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-loss/20 bg-loss/10 py-3 text-xs font-semibold text-loss transition-colors hover:bg-loss/20"
+                    className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-loss/25 bg-loss/10 py-3 text-xs font-semibold text-loss transition-colors hover:bg-loss/15"
                   >
                     <LogOut className="size-4" />
                     Sair da conta
@@ -590,12 +562,12 @@ export function AppShell({
         </Dialog>
       )}
 
-      {/* Bottom Mobile Dock Navigation com Liquid Glass */}
+      {/* Bottom Mobile Dock Navigation com glass-navigation */}
       <nav
         aria-label="Navegação inferior no celular"
         className="mobile-dock fixed inset-x-0 bottom-0 z-50 px-2 pt-1.5 lg:hidden"
       >
-        <div className="mx-auto grid max-w-md grid-cols-5 items-center gap-1">
+        <div className="mx-auto grid max-w-lg grid-cols-6 items-center gap-0.5">
           {dockTabs.slice(0, 2).map(({ href, label, Icon }) => {
             const active = !menuOpen && !quickOpen && isRouteActive(path, href);
             return (
@@ -608,12 +580,12 @@ export function AppShell({
                 }}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[10px] font-medium transition-colors",
+                  "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
                   active ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary shadow-xs" />}
-                <Icon className={cn("size-5 transition-transform", active && "scale-105")} />
+                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />}
+                <Icon className="size-5" />
                 <span className="truncate">{label}</span>
               </Link>
             );
@@ -629,7 +601,7 @@ export function AppShell({
                 setQuickOpen((v) => !v);
               }}
               className={cn(
-                "brand-mark flex size-11 items-center justify-center rounded-2xl shadow-md transition-all active:scale-95 cursor-pointer",
+                "brand-mark flex size-11 cursor-pointer items-center justify-center rounded-2xl shadow-md transition-transform active:scale-95",
                 quickOpen && "rotate-45",
               )}
             >
@@ -649,12 +621,12 @@ export function AppShell({
                 }}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[10px] font-medium transition-colors",
+                  "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
                   active ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary shadow-xs" />}
-                <Icon className={cn("size-5 transition-transform", active && "scale-105")} />
+                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />}
+                <Icon className="size-5" />
                 <span className="truncate">{label}</span>
               </Link>
             );
@@ -668,12 +640,12 @@ export function AppShell({
               setMenuOpen((v) => !v);
             }}
             className={cn(
-              "relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[10px] font-medium transition-colors cursor-pointer",
+              "relative flex min-h-12 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
               menuOpen || isMoreActive ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {(menuOpen || isMoreActive) && (
-              <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary shadow-xs" />
+              <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />
             )}
             {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             <span>Menu</span>

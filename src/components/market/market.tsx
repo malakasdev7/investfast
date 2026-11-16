@@ -379,14 +379,14 @@ export function MarketPage() {
 
       <nav
         aria-label="Tipos de mercado"
-        className="no-scrollbar -mx-3.5 flex gap-1.5 overflow-x-auto border-b px-3.5 pb-3 sm:mx-0 sm:border-0 sm:px-0 sm:pb-0"
+        className="glass-navigation no-scrollbar flex w-full items-center gap-1.5 overflow-x-auto rounded-2xl border p-1.5 sm:w-fit"
       >
         {tabs.map(([id, name]) => (
           <Button
             key={id}
             size="sm"
             className="shrink-0"
-            variant={tab === id ? "default" : "outline"}
+            variant={tab === id ? "default" : "ghost"}
             onClick={() => {
               setTab(id);
               setSearch("");
@@ -488,16 +488,16 @@ export function MarketPage() {
                 </div>
               </div>
 
-              <dl className="grid grid-cols-3 gap-2 text-xs">
+              <dl className="grid grid-cols-3 gap-2 rounded-2xl border border-glass-border bg-glass-light-bg p-3 text-xs">
                 <div>
                   <dt className="text-muted-foreground">Máxima</dt>
-                  <dd className="mt-1">
+                  <dd className="mt-1 font-medium tabular text-foreground">
                     {money(a.quote?.high, a.currency === "POINTS")}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-muted-foreground">Mínima</dt>
-                  <dd className="mt-1">
+                  <dd className="mt-1 font-medium tabular text-foreground">
                     {money(a.quote?.low, a.currency === "POINTS")}
                   </dd>
                 </div>
@@ -505,11 +505,11 @@ export function MarketPage() {
                   <dt className="text-muted-foreground">
                     Volume{a.type === "cripto" ? " (R$)" : ""}
                   </dt>
-                  <dd className="mt-1">{number(a.quote?.volume)}</dd>
+                  <dd className="mt-1 font-medium tabular text-foreground">{number(a.quote?.volume)}</dd>
                 </div>
               </dl>
 
-              <p className="mt-auto flex items-center gap-2 text-[11px] text-muted-foreground">
+              <p className="mt-auto flex items-center gap-2 text-xs text-muted-foreground">
                 <Clock3 className="size-3" />
                 {timestamp(a.quote?.timestamp)}
                 {a.quote?.source === "manual" ? " · manual" : ""}
@@ -605,151 +605,200 @@ export function MarketDetail({
         retry={() => void result.refetch()}
       />
 
-      <section className="card hero-metric p-6">
-        <p className="text-sm">
-          {a.currency === "POINTS" ? "Valor do índice" : "Preço atual"}
-        </p>
-        <p className="metric-value mt-3 text-4xl font-semibold">
-          {money(a.quote?.price, a.currency === "POINTS")}
-        </p>
-        <p className="mt-3">
-          <Change value={a.quote?.change_percent} />{" "}
-          <span className="text-sm">
-            ({money(a.quote?.change, a.currency === "POINTS")}) ·{" "}
-            {a.type === "cripto" ? "24 horas" : "dia"}
-          </span>
-        </p>
-        <p className="mt-3 text-xs text-slate-300">
-          {timestamp(a.quote?.timestamp)} ·{" "}
-          {a.quote?.source || "Sem fonte disponível"}
-        </p>
+      <section className="hero-metric rounded-3xl p-6 sm:p-7">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">
+              {a.currency === "POINTS" ? "Valor do índice" : "Preço atual"}
+            </p>
+            <p className="metric-value mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-[42px]">
+              {money(a.quote?.price, a.currency === "POINTS")}
+            </p>
+            <p className="mt-2.5 text-sm font-medium">
+              <Change value={a.quote?.change_percent} />{" "}
+              <span className="text-muted-foreground">
+                ({money(a.quote?.change, a.currency === "POINTS")}) ·{" "}
+                {a.type === "cripto" ? "24 horas" : "dia"}
+              </span>
+            </p>
+          </div>
+          <p className="rounded-full border border-glass-border bg-glass-light-bg px-3.5 py-1.5 text-xs text-muted-foreground">
+            {timestamp(a.quote?.timestamp)} · {a.quote?.source || "Sem fonte disponível"}
+          </p>
+        </div>
+
+        <dl className="mt-6 grid grid-cols-2 gap-3 border-t border-border pt-5 sm:grid-cols-3 lg:grid-cols-6">
+          {[
+            ["7 dias", <Change key="7" value={a.quote?.change_7d} />],
+            ["30 dias", <Change key="30" value={a.quote?.change_30d} />],
+            ["Máxima", money(a.quote?.high, a.currency === "POINTS")],
+            ["Mínima", money(a.quote?.low, a.currency === "POINTS")],
+            [
+              "Volume" + (a.type === "cripto" ? " 24h (R$)" : ""),
+              number(a.quote?.volume),
+            ],
+            ["Valor de mercado (R$)", number(a.quote?.market_cap)],
+          ].map(([label, value]) => (
+            <div
+              className="rounded-2xl border border-glass-border bg-glass-light-bg p-3.5"
+              key={String(label)}
+            >
+              <dt className="text-xs text-muted-foreground">{label}</dt>
+              <dd className="mt-1.5 break-words text-sm font-semibold tabular text-foreground">
+                {value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      <dl className="grid grid-cols-2 gap-3 lg:grid-cols-6">
-        {[
-          ["7 dias", <Change key="7" value={a.quote?.change_7d} />],
-          ["30 dias", <Change key="30" value={a.quote?.change_30d} />],
-          ["Máxima", money(a.quote?.high, a.currency === "POINTS")],
-          ["Mínima", money(a.quote?.low, a.currency === "POINTS")],
-          [
-            "Volume" + (a.type === "cripto" ? " 24h (R$)" : ""),
-            number(a.quote?.volume),
-          ],
-          ["Valor de mercado (R$)", number(a.quote?.market_cap)],
-        ].map(([label, value]) => (
-          <div className="card p-4" key={String(label)}>
-            <dt className="text-xs text-muted-foreground">{label}</dt>
-            <dd className="mt-2 break-words font-medium">{value}</dd>
+      <section className="card p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base font-semibold tracking-tight">Histórico de preços</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Evolução das cotações registradas no intervalo selecionado
+            </p>
           </div>
-        ))}
-      </dl>
-
-      <section className="card p-4 sm:p-6">
-        <h2 className="font-semibold">Histórico de preços</h2>
-        <div className="my-5 flex flex-wrap gap-2">
-          {Object.entries(periods).map(([key, label]) => (
-            <Button
-              key={key}
-              size="sm"
-              variant={key === period ? "default" : "outline"}
-              onClick={() => setPeriod(key as Period)}
-              aria-pressed={key === period}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
-        {chart.length ? (
-          <div
-            className="h-72 min-w-0"
-            role="img"
-            aria-label={`Gráfico histórico de ${a.ticker}`}
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart
-                data={chart}
-                margin={{ left: 0, right: 10, top: 10, bottom: 0 }}
+          <div className="glass-navigation flex flex-wrap gap-1.5 rounded-2xl border p-1.5">
+            {Object.entries(periods).map(([key, label]) => (
+              <Button
+                key={key}
+                size="sm"
+                variant={key === period ? "default" : "ghost"}
+                onClick={() => setPeriod(key as Period)}
+                aria-pressed={key === period}
               >
-                <CartesianGrid
-                  stroke="var(--border)"
-                  strokeDasharray="3 3"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="timestamp"
-                  type="number"
-                  domain={["dataMin", "dataMax"]}
-                  tickFormatter={(v) =>
-                    new Date(v).toLocaleDateString("pt-BR", {
-                      day: "2-digit",
-                      month: "2-digit",
-                    })
-                  }
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                  minTickGap={35}
-                />
-                <YAxis
-                  width={65}
-                  domain={["auto", "auto"]}
-                  tickFormatter={(v) => number(String(v))}
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                />
-                <Tooltip
-                  labelFormatter={(v) => new Date(Number(v)).toLocaleString("pt-BR")}
-                  formatter={(v) => [
-                    money(String(v), a.currency === "POINTS"),
-                    "Preço",
-                  ]}
-                  contentStyle={{
-                    background: "var(--card)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 12,
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="price"
-                  stroke="var(--primary)"
-                  fill="var(--primary)"
-                  fillOpacity={0.12}
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+                {label}
+              </Button>
+            ))}
           </div>
-        ) : (
-          <p className="py-16 text-center text-sm text-muted-foreground">
-            Sem preços salvos neste período. Configure a fonte automática ou registre um preço
-            manual.
-          </p>
-        )}
+        </div>
+
+        <div className="mt-5">
+          {chart.length === 1 ? (
+            <div
+              className="flex flex-col justify-between gap-4 rounded-2xl border border-glass-border bg-glass-light-bg p-5"
+              role="img"
+              aria-label={`Gráfico histórico de ${a.ticker}`}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Cotação única registrada no período ·{" "}
+                  {new Date(chart[0].timestamp).toLocaleString("pt-BR")}
+                </span>
+                <span className="badge badge-primary">1 registro no período</span>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">Preço registrado</p>
+                <p className="metric-value mt-1 text-2xl font-semibold text-foreground sm:text-3xl">
+                  {money(String(chart[0].price), a.currency === "POINTS")}
+                </p>
+              </div>
+              <p className="text-xs leading-5 text-muted-foreground">
+                Apenas um ponto de cotação está disponível para este intervalo. O gráfico de curva
+                histórica é traçado automaticamente a partir do segundo registro.
+              </p>
+            </div>
+          ) : chart.length > 1 ? (
+            <div
+              className="h-64 min-w-0"
+              role="img"
+              aria-label={`Gráfico histórico de ${a.ticker}`}
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={chart}
+                  margin={{ left: 0, right: 10, top: 10, bottom: 0 }}
+                >
+                  <CartesianGrid
+                    stroke="var(--border)"
+                    strokeDasharray="3 5"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="timestamp"
+                    type="number"
+                    domain={["dataMin", "dataMax"]}
+                    tickFormatter={(v) =>
+                      new Date(v).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                      })
+                    }
+                    tick={{ fontSize: 12, fill: "var(--muted-foreground)" }}
+                    minTickGap={35}
+                  />
+                  <YAxis
+                    width={65}
+                    domain={["auto", "auto"]}
+                    tickFormatter={(v) => number(String(v))}
+                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                  />
+                  <Tooltip
+                    labelFormatter={(v) => new Date(Number(v)).toLocaleString("pt-BR")}
+                    formatter={(v) => [
+                      money(String(v), a.currency === "POINTS"),
+                      "Preço",
+                    ]}
+                    contentStyle={{
+                      background: "var(--glass-overlay-surface)",
+                      backdropFilter: "blur(20px)",
+                      border: "1px solid var(--glass-border)",
+                      borderRadius: 14,
+                      boxShadow: "var(--shadow-elevated)",
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="price"
+                    stroke="var(--primary)"
+                    fill="var(--primary)"
+                    fillOpacity={0.16}
+                    strokeWidth={2.25}
+                    isAnimationActive={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <p className="py-12 text-center text-sm text-muted-foreground">
+              Sem preços salvos neste período. Configure a fonte automática ou registre um preço
+              manual.
+            </p>
+          )}
+        </div>
         <p className="mt-4 text-xs text-muted-foreground">
           {result.data?.historyNote} Pontos exibidos: {chart.length}.
         </p>
       </section>
 
       <section className="card overflow-hidden">
-        <h2 className="p-5 font-semibold">Últimos preços salvos</h2>
+        <div className="border-b border-border px-5 py-4 sm:px-6">
+          <h2 className="text-base font-semibold tracking-tight">Últimos preços salvos</h2>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="border-y text-xs text-muted-foreground">
+            <thead className="border-b border-border bg-glass-light-bg text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
-                <th className="p-3">Data e hora</th>
-                <th className="p-3">Preço</th>
-                <th className="p-3">Fonte</th>
+                <th className="px-5 py-3.5 font-semibold">Data e hora</th>
+                <th className="px-5 py-3.5 font-semibold">Preço</th>
+                <th className="px-5 py-3.5 font-semibold">Fonte</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-border">
               {(result.data?.history || [])
                 .slice(-12)
                 .reverse()
                 .map((p, i) => (
-                  <tr key={`${p.timestamp}-${i}`} className="border-b">
-                    <td className="p-3">{timestamp(p.timestamp)}</td>
-                    <td className="p-3">
+                  <tr key={`${p.timestamp}-${i}`} className="transition-colors hover:bg-muted/35">
+                    <td className="px-5 py-3.5 tabular">{timestamp(p.timestamp)}</td>
+                    <td className="px-5 py-3.5 font-semibold tabular">
                       {money(p.price, a.currency === "POINTS")}
                     </td>
-                    <td className="p-3">{p.source}</td>
+                    <td className="px-5 py-3.5">
+                      <span className="badge">{p.source}</span>
+                    </td>
                   </tr>
                 ))}
             </tbody>
@@ -758,20 +807,26 @@ export function MarketDetail({
       </section>
 
       {a.type !== "cripto" && a.type !== "indices" && (
-        <section className="card p-5">
-          <h2 className="font-semibold">Dividendos informados pelo provedor</h2>
+        <section className="card p-5 sm:p-6">
+          <h2 className="text-base font-semibold tracking-tight">
+            Dividendos informados pelo provedor
+          </h2>
           {dividends.length ? (
-            dividends.map((d, i) => (
-              <div
-                key={i}
-                className="flex flex-wrap justify-between gap-2 border-b py-3 text-sm"
-              >
-                <span>
-                  {d.label || "Provento"} · {d.paymentDate?.slice(0, 10)}
-                </span>
-                <span>{money(d.rate)} por unidade</span>
-              </div>
-            ))
+            <div className="mt-3 divide-y divide-border">
+              {dividends.map((d, i) => (
+                <div
+                  key={i}
+                  className="flex flex-wrap justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
+                >
+                  <span className="font-medium text-foreground">
+                    {d.label || "Provento"} · {d.paymentDate?.slice(0, 10)}
+                  </span>
+                  <span className="font-semibold tabular text-gain">
+                    {money(d.rate)} por unidade
+                  </span>
+                </div>
+              ))}
+            </div>
           ) : (
             <p className="mt-3 text-sm text-muted-foreground">
               Nenhum dividendo disponível nesta consulta.

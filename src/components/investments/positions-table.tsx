@@ -35,8 +35,8 @@ export function PositionsTable({
 
   return (
     <div className="overflow-x-auto">
-      <table className="responsive-records positions-records w-full whitespace-nowrap text-left text-xs">
-        <thead className="border-b bg-surface-subtle/70 text-[11px] uppercase tracking-wider text-muted-foreground">
+      <table className="responsive-records positions-records w-full whitespace-nowrap text-left text-sm">
+        <thead className="border-b border-border bg-glass-light-bg text-xs uppercase tracking-wider text-muted-foreground">
           <tr>
             {[
               "Ativo / carteira",
@@ -52,13 +52,13 @@ export function PositionsTable({
               "Participação",
               "Primeira compra",
             ].map((h) => (
-              <th key={h} className="px-4 py-3 font-semibold">
+              <th key={h} className="px-4 py-3.5 font-semibold">
                 {h}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody className="divide-y divide-border">
           {rows.map((p) => {
             const days = p.row.first_purchase
               ? differenceInDays(parseISO(today()), parseISO(text(p.row.first_purchase)))
@@ -87,7 +87,7 @@ export function PositionsTable({
               <tr key={p.row.id} className="transition-colors hover:bg-muted/35">
                 <td data-label="Ativo / carteira" className="px-4 py-3.5">
                   <p className="font-semibold text-foreground">{text(p.asset?.ticker)}</p>
-                  <p className="mt-0.5 text-[11px] text-muted-foreground">
+                  <p className="mt-0.5 text-xs text-muted-foreground">
                     {text(data.portfolios?.find((c) => c.id === p.row.portfolio_id)?.name)} ·{" "}
                     {labels[text(p.asset?.asset_class)]}
                   </p>
@@ -104,7 +104,7 @@ export function PositionsTable({
                 <td data-label="Valor atual" className="tabular px-4 font-semibold">
                   {formatCurrency(p.value)}
                   {!p.asset?.price_updated_at && (
-                    <p className="text-[11px] font-normal text-warning">Sem cotação</p>
+                    <p className="text-xs font-normal text-warning">Sem cotação</p>
                   )}
                 </td>
                 <td
@@ -118,6 +118,7 @@ export function PositionsTable({
                         : "text-muted-foreground",
                   )}
                 >
+                  {p.profit.gt(0) ? "+" : ""}
                   {formatCurrency(p.profit)}
                 </td>
                 <td
@@ -127,6 +128,7 @@ export function PositionsTable({
                     p.realized.gt(0) ? "text-gain" : p.realized.lt(0) ? "text-loss" : "",
                   )}
                 >
+                  {p.realized.gt(0) ? "+" : ""}
                   {formatCurrency(p.realized)}
                 </td>
                 <td
@@ -138,10 +140,11 @@ export function PositionsTable({
                 <td data-label="Retorno / anualizado" className="tabular px-4">
                   <span
                     className={cn(
-                      "font-medium",
+                      "font-semibold",
                       p.rate.gt(0) ? "text-gain" : p.rate.lt(0) ? "text-loss" : "",
                     )}
                   >
+                    {p.rate.gt(0) ? "+" : ""}
                     {p.rate.toFixed(2)}%
                   </span>{" "}
                   / {annual && annual.isFinite() ? `${annual.toFixed(2)}%` : "—"}
@@ -160,7 +163,7 @@ export function PositionsTable({
           })}
         </tbody>
       </table>
-      <p className="border-t bg-surface-subtle/40 px-4 py-3 text-[11px] text-muted-foreground">
+      <p className="border-t border-border bg-glass-light-bg px-4 py-3 text-xs text-muted-foreground">
         ¹ Anualização simples desde a primeira compra; exibida a partir de 30 dias, para uma única
         compra/aporte e sem vendas ou transferências. Retorno é valorização sobre o custo
         remanescente. Yield on cost usa proventos recebidos sobre esse custo.

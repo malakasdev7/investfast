@@ -85,16 +85,16 @@ export function SettingsPage() {
   }
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <div>
-        <p className="mb-2 text-[10px] uppercase tracking-[.2em] text-primary">Do seu jeito</p>
+        <p className="section-kicker">Do seu jeito</p>
         <h1 className="page-heading">Configurações</h1>
         <p className="subheading">Gerencie seu perfil, acesso e preferências.</p>
       </div>
 
-      <section className="card p-6">
+      <section className="card p-6 sm:p-7">
         <div className="flex items-center justify-between">
-          <h2 className="flex items-center gap-2 font-semibold">
+          <h2 className="flex items-center gap-2 text-base font-semibold tracking-tight">
             <UserRound className="size-4 text-primary" />
             Seu perfil
           </h2>
@@ -104,7 +104,7 @@ export function SettingsPage() {
         </div>
         <div className="mt-6 flex items-center gap-5">
           <div
-            className="flex size-16 shrink-0 items-center justify-center rounded-full bg-primary/10 bg-cover bg-center text-xl font-semibold text-primary"
+            className="flex size-16 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-primary/12 bg-cover bg-center text-xl font-semibold text-primary"
             style={
               profile?.avatar_url ? { backgroundImage: `url(${text(profile.avatar_url)})` } : undefined
             }
@@ -113,7 +113,7 @@ export function SettingsPage() {
             {!profile?.avatar_url && text(profile?.name).slice(0, 2).toUpperCase()}
           </div>
           <div>
-            <p className="font-semibold">{text(profile?.name)}</p>
+            <p className="text-base font-semibold">{text(profile?.name)}</p>
             <p className="mt-1 text-sm text-muted-foreground">{text(profile?.email)}</p>
             <p className="mt-2 text-xs text-muted-foreground">
               Moeda: BRL · Desde {profile ? formatDate(profile.created_at) : "—"}
@@ -122,8 +122,8 @@ export function SettingsPage() {
         </div>
       </section>
 
-      <section className="card p-6">
-        <h2 className="flex items-center gap-2 font-semibold">
+      <section className="card p-6 sm:p-7">
+        <h2 className="flex items-center gap-2 text-base font-semibold tracking-tight">
           <Settings className="size-4 text-primary" />
           E-mail de acesso
         </h2>
@@ -150,8 +150,8 @@ export function SettingsPage() {
         </form>
       </section>
 
-      <section className="card p-6">
-        <h2 className="flex items-center gap-2 font-semibold">
+      <section className="card p-6 sm:p-7">
+        <h2 className="flex items-center gap-2 text-base font-semibold tracking-tight">
           <ShieldCheck className="size-4 text-primary" />
           Segurança
         </h2>
@@ -167,25 +167,25 @@ export function SettingsPage() {
         </Button>
       </section>
 
-      <section className="card p-6">
-        <h2 className="font-semibold">Atividade recente e auditoria</h2>
-        <div className="mt-4 divide-y">
+      <section className="card p-6 sm:p-7">
+        <h2 className="text-base font-semibold tracking-tight">Atividade recente e auditoria</h2>
+        <div className="mt-4 divide-y divide-border">
           {data.audit_logs?.slice(0, 12).map((a) => (
-            <div key={a.id} className="flex items-center justify-between py-3 text-xs">
+            <div key={a.id} className="flex items-center justify-between py-3 text-xs sm:text-sm">
               <span className="font-medium text-foreground">
                 {entityNames[text(a.entity)] || text(a.entity)} ·{" "}
                 <span className="text-muted-foreground">
                   {actionNames[text(a.action)] || text(a.action)}
                 </span>
               </span>
-              <span className="text-muted-foreground">{formatDate(a.created_at)}</span>
+              <span className="text-muted-foreground tabular">{formatDate(a.created_at)}</span>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="rounded-xl border border-loss/30 bg-loss/5 p-6">
-        <h2 className="flex items-center gap-2 font-semibold text-loss">
+      <section className="card border-loss/30 bg-loss/5 p-6 sm:p-7">
+        <h2 className="flex items-center gap-2 text-base font-semibold tracking-tight text-loss">
           <Trash2 className="size-4" />
           Excluir minha conta
         </h2>

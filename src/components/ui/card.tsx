@@ -3,17 +3,17 @@ import { cn } from "@/lib/utils";
 
 export function Card({
   className,
-  variant = "medium",
+  variant = "content",
   ...props
 }: React.ComponentProps<"section"> & {
-  variant?: "light" | "medium" | "frosted";
+  variant?: "navigation" | "content" | "overlay" | "light" | "medium" | "frosted";
 }) {
   const variantClass =
-    variant === "light"
-      ? "glass-light"
-      : variant === "frosted"
-        ? "glass-frosted"
-        : "glass-medium";
+    variant === "navigation" || variant === "light"
+      ? "glass-navigation"
+      : variant === "overlay" || variant === "frosted"
+        ? "glass-overlay"
+        : "glass-content";
 
   return <section className={cn("card", variantClass, className)} {...props} />;
 }
@@ -22,7 +22,7 @@ export function CardHeader({ className, ...props }: React.ComponentProps<"div">)
   return (
     <div
       className={cn(
-        "flex flex-col gap-1.5 border-b border-white/20 dark:border-white/10 px-5 py-4 sm:px-6",
+        "flex flex-col gap-1.5 border-b border-border px-5 py-4 sm:px-6",
         className
       )}
       {...props}
@@ -34,7 +34,7 @@ export function CardTitle({ className, ...props }: React.ComponentProps<"h2">) {
   return (
     <h2
       className={cn(
-        "text-sm font-semibold tracking-tight text-foreground",
+        "text-base font-semibold tracking-tight text-foreground",
         className
       )}
       {...props}
@@ -45,7 +45,7 @@ export function CardTitle({ className, ...props }: React.ComponentProps<"h2">) {
 export function CardDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
-      className={cn("text-xs leading-5 text-muted-foreground", className)}
+      className={cn("text-xs leading-5 text-muted-foreground sm:text-sm", className)}
       {...props}
     />
   );
@@ -59,7 +59,7 @@ export function CardFooter({ className, ...props }: React.ComponentProps<"div">)
   return (
     <div
       className={cn(
-        "flex items-center border-t border-white/20 dark:border-white/10 px-5 py-3.5 sm:px-6",
+        "flex items-center border-t border-border px-5 py-3.5 sm:px-6",
         className
       )}
       {...props}

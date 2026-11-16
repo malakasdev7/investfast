@@ -22,13 +22,13 @@ export function CdiPanel({ data }: { data: Snapshot }) {
 
   return (
     <section aria-label="Aplicações CDI" className="space-y-4">
-      <div className="card flex flex-wrap items-center justify-between gap-4 border-primary/20 p-5">
+      <div className="card flex flex-wrap items-center justify-between gap-4 border-primary/25 p-5 sm:p-6">
         <div className="min-w-0">
-          <h2 className="flex items-center gap-2 text-sm font-semibold">
+          <h2 className="flex items-center gap-2 text-base font-semibold tracking-tight">
             <PiggyBank className="size-4 text-primary" />
             CDI · Caixinhas e cofrinhos
           </h2>
-          <p className="mt-1.5 max-w-xl text-xs leading-5 text-muted-foreground">
+          <p className="mt-1 max-w-xl text-xs leading-5 text-muted-foreground sm:text-sm">
             Cadastre o dinheiro guardado no banco, acompanhe o saldo e movimente em reais.
           </p>
         </div>
@@ -38,7 +38,7 @@ export function CdiPanel({ data }: { data: Snapshot }) {
         </Button>
       </div>
 
-      <div className="grid gap-3.5 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {assets.map((a) => {
           const pp = ps.filter((p) => p.row.asset_id === a.id);
           const value = pp.reduce((s, p) => s.plus(p.value), num(0));
@@ -48,11 +48,11 @@ export function CdiPanel({ data }: { data: Snapshot }) {
           const yieldVal = value.minus(cost);
 
           return (
-            <article key={a.id} className="card flex flex-col justify-between p-5">
+            <article key={a.id} className="card flex flex-col justify-between p-5 sm:p-6">
               <div>
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h3 className="break-words text-sm font-semibold">{text(a.name)}</h3>
+                    <h3 className="break-words text-base font-semibold tracking-tight">{text(a.name)}</h3>
                     <p className="mt-0.5 text-xs text-muted-foreground">
                       {text(a.institution) || "Instituição não informada"}
                     </p>
@@ -64,22 +64,22 @@ export function CdiPanel({ data }: { data: Snapshot }) {
                   </span>
                 </div>
 
-                <p className="mt-5 text-[11px] text-muted-foreground">
+                <p className="mt-5 text-xs text-muted-foreground">
                   {status?.source === "cdi_estimate" ? "Saldo bruto estimado" : "Saldo informado"} ·
                   todas as carteiras
                 </p>
-                <p className="metric-value mt-1 text-2xl font-semibold">{formatCurrency(value)}</p>
+                <p className="metric-value mt-1 text-2xl font-semibold sm:text-3xl">{formatCurrency(value)}</p>
                 <p className="tabular mt-1.5 text-xs text-muted-foreground">
                   Valor aplicado restante: {formatCurrency(cost)}
                 </p>
 
-                <div className="mt-3.5 rounded-xl border bg-surface-subtle/60 p-3.5">
-                  <p className="text-[11px] text-muted-foreground">
+                <div className="mt-4 rounded-2xl border border-glass-border bg-glass-light-bg p-4">
+                  <p className="text-xs text-muted-foreground">
                     Rendimento na posição · antes de impostos
                   </p>
                   <p
                     className={cn(
-                      "tabular mt-1 text-sm font-semibold",
+                      "tabular mt-1 text-base font-semibold",
                       yieldVal.gt(0)
                         ? "text-gain"
                         : yieldVal.lt(0)
@@ -87,9 +87,10 @@ export function CdiPanel({ data }: { data: Snapshot }) {
                           : "text-foreground",
                     )}
                   >
+                    {yieldVal.gt(0) ? "+" : ""}
                     {formatCurrency(yieldVal)}
                   </p>
-                  <p className="tabular mt-1 text-[11px] text-muted-foreground">
+                  <p className="tabular mt-1 text-xs text-muted-foreground">
                     Resultado dos resgates: {formatCurrency(realized)}
                   </p>
                 </div>
@@ -99,7 +100,7 @@ export function CdiPanel({ data }: { data: Snapshot }) {
                     {text(status.warning)}
                   </p>
                 )}
-                <p className="mt-2.5 text-[11px] text-muted-foreground">
+                <p className="mt-2.5 text-xs text-muted-foreground">
                   {status?.rate_date
                     ? `CDI diário até ${formatDate(text(status.rate_date))} · Banco Central`
                     : a.price_updated_at
@@ -110,7 +111,7 @@ export function CdiPanel({ data }: { data: Snapshot }) {
                 </p>
               </div>
 
-              <div className="mt-4 grid grid-cols-2 gap-2 border-t pt-4">
+              <div className="mt-4 grid grid-cols-2 gap-2 border-t border-border pt-4">
                 <Button
                   variant="outline"
                   size="sm"
@@ -387,7 +388,7 @@ function CdiForm({
         />
       </label>
 
-      <p className="rounded-xl border bg-surface-subtle/60 p-3.5 text-xs leading-5 text-muted-foreground">
+      <p className="rounded-2xl border border-glass-border bg-glass-light-bg p-4 text-xs leading-5 text-muted-foreground">
         {action === "balance"
           ? "Copie o saldo da aplicação exibido pelo banco, incluindo os rendimentos. Se ela estiver em mais de uma carteira, informe a soma. Esta atualização não é um novo aporte."
           : "Ao confirmar, a aplicação e a conta selecionada serão atualizadas juntas. Rendimentos são estimativas brutas, antes de IR e IOF; regras específicas do banco podem alterar o valor."}

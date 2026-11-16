@@ -15,7 +15,7 @@ type Mode = "login" | "register" | "recover" | "password";
 const copy: Record<Mode, { title: string; subtitle: string; button: string }> = {
   login: {
     title: "Bom ter você de volta.",
-    subtitle: "Entre para acompanhar seu dinheiro e seus próximos passos.",
+    subtitle: "Entre para acompanhar seu patrimônio e seus próximos passos.",
     button: "Entrar na minha conta",
   },
   register: {
@@ -96,8 +96,8 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
   if (success) {
     return (
-      <div className="card space-y-5 p-8">
-        <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+      <div className="space-y-5 py-2">
+        <div className="flex size-12 items-center justify-center rounded-2xl border border-primary/30 bg-primary/12 text-primary">
           <MailCheck className="size-6" />
         </div>
         <div>
@@ -116,14 +116,14 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+      <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
         {copy[mode].title}
       </h1>
-      <p className="mt-2.5 text-sm leading-6 text-muted-foreground">
+      <p className="mt-2 text-sm leading-6 text-muted-foreground">
         {copy[mode].subtitle}
       </p>
 
-      <form onSubmit={handleSubmit(submit)} className="mt-7 space-y-4" noValidate>
+      <form onSubmit={handleSubmit(submit)} className="mt-6 space-y-4" noValidate>
         {mode === "register" && (
           <label className="field-label">
             Nome
@@ -175,7 +175,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         {(error || search.has("error")) && (
           <p
             role="alert"
-            className="rounded-xl border border-loss/25 bg-loss/10 px-3.5 py-2.5 text-xs font-medium text-loss"
+            className="rounded-xl border border-loss/30 bg-loss/10 px-3.5 py-2.5 text-xs font-medium text-loss"
           >
             {error || "Este link expirou ou já foi utilizado. Solicite um novo."}
           </p>
@@ -187,7 +187,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         </Button>
       </form>
 
-      <div className="mt-6 space-y-2.5 text-center text-sm text-muted-foreground">
+      <div className="mt-6 space-y-2.5 border-t border-border pt-5 text-center text-sm text-muted-foreground">
         {mode === "login" ? (
           <>
             <p>

@@ -22,7 +22,7 @@ export function PeriodFilter({
       </label>
       <select
         id="period"
-        className="input m-0 w-auto min-w-[148px] bg-card"
+        className="input m-0 h-10 w-auto min-w-[152px] py-2 font-medium"
         value={value.preset}
         onChange={(e) => {
           const preset = e.target.value;
@@ -52,7 +52,7 @@ export function PeriodFilter({
         <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
           <input
             aria-label="Data inicial"
-            className="input m-0 w-full bg-card sm:w-auto"
+            className="input m-0 h-10 w-full py-2 sm:w-auto"
             type="date"
             max={value.end}
             value={value.start}
@@ -60,7 +60,7 @@ export function PeriodFilter({
           />
           <input
             aria-label="Data final"
-            className="input m-0 w-full bg-card sm:w-auto"
+            className="input m-0 h-10 w-full py-2 sm:w-auto"
             type="date"
             min={value.start}
             max={today()}

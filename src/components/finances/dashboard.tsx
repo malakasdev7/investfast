@@ -5,9 +5,9 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   Wallet,
-  ChartNoAxesCombined,
   Plus,
   TrendingUp,
+  TrendingDown,
   TriangleAlert,
   ArrowRight,
   Target,
@@ -51,7 +51,7 @@ export function Metric({
   label,
   value,
   caption,
-  Icon = Wallet,
+  Icon,
   accent = false,
   tone = "neutral",
 }: {
@@ -70,46 +70,33 @@ export function Metric({
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <p
-          className={cn(
-            "truncate text-xs font-medium",
-            accent ? "text-slate-300" : "text-muted-foreground",
-          )}
-        >
+        <p className="text-xs font-medium text-muted-foreground sm:text-sm">
           {label}
         </p>
-        <span
-          className={cn(
-            "shrink-0 rounded-xl p-2",
-            accent
-              ? "bg-white/10 text-blue-200"
-              : tone === "gain"
-                ? "bg-gain/10 text-gain"
+        {Icon && (
+          <Icon
+            className={cn(
+              "size-4 shrink-0",
+              tone === "gain"
+                ? "text-gain"
                 : tone === "loss"
-                  ? "bg-loss/10 text-loss"
-                  : "bg-muted text-muted-foreground",
-          )}
-        >
-          <Icon className="size-4" />
-        </span>
+                  ? "text-loss"
+                  : "text-muted-foreground",
+            )}
+          />
+        )}
       </div>
       <p
         className={cn(
-          "metric-value mt-3 break-words font-semibold tracking-tight",
-          accent ? "text-2xl md:text-[26px]" : "text-lg sm:text-2xl md:text-[26px]",
-          !accent && tone === "gain" && "text-gain",
-          !accent && tone === "loss" && "text-loss",
+          "metric-value mt-2.5 break-words text-xl font-semibold tracking-tight sm:text-2xl",
+          tone === "gain" && "text-gain",
+          tone === "loss" && "text-loss",
         )}
       >
         {value}
       </p>
       {caption && (
-        <p
-          className={cn(
-            "mt-1.5 text-[11px] leading-4",
-            accent ? "text-slate-300" : "text-muted-foreground",
-          )}
-        >
+        <p className="mt-1.5 text-xs leading-4 text-muted-foreground">
           {caption}
         </p>
       )}
@@ -124,27 +111,27 @@ export function RecentTransactions({ rows, data }: { rows: Row[]; data: Snapshot
       description="Registre suas receitas e despesas para acompanhar os movimentos."
     />
   ) : (
-    <div className="divide-y">
+    <div className="divide-y divide-border">
       {rows.map((t) => {
         const isIncome = t.type === "income";
         const isExpense = t.type === "expense";
         return (
-          <div className="flex items-center gap-3.5 px-4 py-3.5 sm:px-5 sm:py-4" key={t.id}>
+          <div className="flex items-center gap-3.5 px-5 py-3.5 sm:px-6 sm:py-4" key={t.id}>
             <span
               className={cn(
-                "flex size-9 shrink-0 items-center justify-center rounded-xl",
+                "flex size-9 shrink-0 items-center justify-center rounded-xl border border-glass-border bg-glass-light-bg",
                 isIncome
-                  ? "bg-gain/10 text-gain"
+                  ? "text-gain"
                   : isExpense
-                    ? "bg-loss/10 text-loss"
-                    : "bg-muted text-muted-foreground",
+                    ? "text-loss"
+                    : "text-muted-foreground",
               )}
             >
               {isIncome ? <ArrowDownLeft className="size-4" /> : <ArrowUpRight className="size-4" />}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{text(t.description)}</p>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
+              <p className="truncate text-sm font-medium text-foreground">{text(t.description)}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 {text(data.categories?.find((c) => c.id === t.category_id)?.name) ||
                   labels[text(t.type)]}{" "}
                 · {formatDate(text(t.transaction_date))}
@@ -157,10 +144,10 @@ export function RecentTransactions({ rows, data }: { rows: Row[]; data: Snapshot
                   isIncome ? "text-gain" : isExpense ? "text-loss" : "text-foreground",
                 )}
               >
-                {isIncome ? "+" : isExpense ? "−" : ""}
+                {isIncome ? "+ " : isExpense ? "− " : ""}
                 {formatCurrency(text(t.amount))}
               </p>
-              <span className="text-[10px] text-muted-foreground">{labels[text(t.status)]}</span>
+              <span className="text-xs text-muted-foreground">{labels[text(t.status)]}</span>
             </div>
           </div>
         );
@@ -230,11 +217,17 @@ export function Dashboard() {
   const unrealizedTone = total.unrealized.gt(0) ? "gain" : total.unrealized.lt(0) ? "loss" : "neutral";
   const realizedTone = total.realized.gt(0) ? "gain" : total.realized.lt(0) ? "loss" : "neutral";
 
+  const incomeNum = f.income.toNumber();
+  const expenseNum = f.expense.toNumber();
+  const flowTotal = incomeNum + expenseNum;
+  const incomeShare = flowTotal > 0 ? Math.round((incomeNum / flowTotal) * 100) : 50;
+
   return (
-    <div className="animate-fade-in space-y-6 md:space-y-7">
-      <div className="flex flex-wrap items-start justify-between gap-4">
+    <div className="animate-fade-in space-y-6 lg:space-y-7">
+      {/* Cabeçalho e Controles do Período */}
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="mb-1 text-xs font-medium text-muted-foreground">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             {new Intl.DateTimeFormat("pt-BR", {
               dateStyle: "long",
               timeZone: "America/Sao_Paulo",
@@ -243,16 +236,17 @@ export function Dashboard() {
           <h1 className="page-heading">
             Olá, {text(data.profiles?.[0]?.name).split(" ")[0] || "bem-vindo"}
           </h1>
-          <p className="subheading">Resumo patrimonial e movimentações do período.</p>
+          <p className="subheading">
+            Visão consolidada do seu patrimônio, investimentos e fluxo de caixa.
+          </p>
         </div>
 
-        <div className="flex w-full flex-wrap items-center justify-between gap-2.5 sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2.5">
           <PeriodFilter value={period} onChange={setPeriod} />
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button
-              size="sm"
+              size="default"
               variant="outline"
-              className="hidden sm:inline-flex sm:h-10 sm:px-3.5"
               onClick={() =>
                 setQuickModal({
                   entity: "investment_transactions",
@@ -260,12 +254,11 @@ export function Dashboard() {
                 })
               }
             >
-              <Coins />
-              Operar
+              <Coins className="size-4 text-primary" />
+              <span>Operar</span>
             </Button>
             <Button
-              size="sm"
-              className="sm:h-10 sm:px-4"
+              size="default"
               onClick={() =>
                 setQuickModal({
                   entity: "transactions",
@@ -274,61 +267,59 @@ export function Dashboard() {
                 })
               }
             >
-              <Plus />
-              Nova transação
+              <Plus className="size-4" />
+              <span>Nova transação</span>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Ferramentas de Decisão & Inteligência */}
-      <section aria-label="Ferramentas de decisão" className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3.5">
+      {/* Barra Compacta de Ações e Ferramentas de Decisão (glass-navigation) */}
+      <nav
+        aria-label="Ferramentas de decisão e atalhos"
+        className="no-scrollbar flex items-center gap-2 overflow-x-auto py-1 lg:flex-wrap lg:overflow-visible"
+      >
+        <span className="hidden shrink-0 px-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground md:inline">
+          Acesso rápido
+        </span>
         {[
           {
             href: "/posso-comprar",
             title: "Posso comprar?",
-            desc: "Avalie qualquer ativo na carteira",
+            desc: "Simular viabilidade",
             Icon: Scale,
           },
           {
             href: "/calculadora",
             title: "Calculadora",
-            desc: "10 simuladores financeiros",
+            desc: "Juros e metas",
             Icon: Calculator,
           },
           {
             href: "/assistente",
             title: "Assistente IA",
-            desc: "Análise conversacional dos dados",
+            desc: "Copiloto financeiro",
             Icon: Sparkles,
           },
           {
             href: "/analises",
             title: "Diagnóstico",
-            desc: "Risco, reserva e recomendações",
+            desc: "Risco e reserva",
             Icon: Lightbulb,
           },
         ].map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="card group flex items-center gap-3 p-3.5 transition-all hover:border-primary/40 hover:bg-primary/[0.02]"
+            className="glass-control group inline-flex shrink-0 items-center gap-2.5 rounded-xl px-3.5 py-2 text-xs font-medium text-foreground transition-colors sm:text-sm"
           >
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-105">
-              <item.Icon className="size-4" />
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-xs font-semibold text-foreground sm:text-sm">{item.title}</p>
-              <p className="truncate text-[11px] text-muted-foreground">{item.desc}</p>
-            </div>
+            <item.Icon className="size-4 text-primary transition-transform group-hover:scale-105" />
+            <span className="font-semibold">{item.title}</span>
+            <span className="hidden text-xs text-muted-foreground 2xl:inline">· {item.desc}</span>
           </Link>
         ))}
-      </section>
 
-      <nav
-        aria-label="Atalhos rápidos"
-        className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:hidden"
-      >
+        <div className="mx-1 h-4 w-px shrink-0 bg-border sm:hidden" />
         {[
           ["/contas", "Contas", Wallet],
           ["/metas", "Metas", Target],
@@ -340,7 +331,7 @@ export function Dashboard() {
             <Link
               key={String(href)}
               href={String(href)}
-              className="inline-flex shrink-0 items-center gap-2 rounded-xl border bg-card px-3.5 py-2 text-xs font-medium text-foreground shadow-2xs active:scale-95"
+              className="glass-control inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground sm:hidden"
             >
               <I className="size-3.5 text-primary" />
               {String(label)}
@@ -350,21 +341,19 @@ export function Dashboard() {
       </nav>
 
       {showOnboarding && (
-        <section className="card border-primary/25 bg-primary/[0.03] p-5">
-          <div className="mb-3.5 flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Sparkles className="size-4" />
-            </span>
-            <h2 className="text-sm font-semibold">Primeiros passos para organizar suas finanças</h2>
+        <section className="card border-primary/30 p-5 sm:p-6">
+          <div className="mb-4 flex items-center gap-2.5">
+            <Sparkles className="size-4 text-primary" />
+            <h2 className="text-base font-semibold">Primeiros passos para organizar suas finanças</h2>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
-            <div className="flex items-center justify-between gap-3 rounded-xl border bg-card p-3.5">
+          <div className="grid gap-3.5 sm:grid-cols-3 sm:divide-x sm:divide-border">
+            <div className="flex items-center justify-between gap-3 border-b border-border py-3 sm:border-b-0 sm:py-1 sm:pr-4">
               <div>
-                <p className="text-xs font-semibold">1. Crie sua primeira conta</p>
-                <p className="mt-0.5 text-[11px] text-muted-foreground">Banco, carteira ou corretora</p>
+                <p className="text-sm font-semibold">1. Crie sua primeira conta</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Banco, carteira ou corretora</p>
               </div>
               {hasAccounts ? (
-                <span className="rounded-full bg-primary/10 p-1.5 text-primary">
+                <span className="rounded-full bg-gain/15 p-1.5 text-gain" aria-label="Concluído">
                   <Check className="size-4" />
                 </span>
               ) : (
@@ -377,13 +366,13 @@ export function Dashboard() {
               )}
             </div>
 
-            <div className="flex items-center justify-between gap-3 rounded-xl border bg-card p-3.5">
+            <div className="flex items-center justify-between gap-3 border-b border-border py-3 sm:border-b-0 sm:px-4 sm:py-1">
               <div>
-                <p className="text-xs font-semibold">2. Registre um lançamento</p>
-                <p className="mt-0.5 text-[11px] text-muted-foreground">Receita ou despesa do mês</p>
+                <p className="text-sm font-semibold">2. Registre um lançamento</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Receita ou despesa do mês</p>
               </div>
               {hasTransactions ? (
-                <span className="rounded-full bg-primary/10 p-1.5 text-primary">
+                <span className="rounded-full bg-gain/15 p-1.5 text-gain" aria-label="Concluído">
                   <Check className="size-4" />
                 </span>
               ) : (
@@ -404,13 +393,13 @@ export function Dashboard() {
               )}
             </div>
 
-            <div className="flex items-center justify-between gap-3 rounded-xl border bg-card p-3.5">
+            <div className="flex items-center justify-between gap-3 py-3 sm:py-1 sm:pl-4">
               <div>
-                <p className="text-xs font-semibold">3. Explore o Mercado ou Ativos</p>
-                <p className="mt-0.5 text-[11px] text-muted-foreground">Ações, FIIs, renda fixa e cripto</p>
+                <p className="text-sm font-semibold">3. Explore o Mercado ou Ativos</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Ações, FIIs, renda fixa e cripto</p>
               </div>
               {hasInvestments ? (
-                <span className="rounded-full bg-primary/10 p-1.5 text-primary">
+                <span className="rounded-full bg-gain/15 p-1.5 text-gain" aria-label="Concluído">
                   <Check className="size-4" />
                 </span>
               ) : (
@@ -423,74 +412,269 @@ export function Dashboard() {
         </section>
       )}
 
-      <div className="grid grid-cols-2 gap-3.5 sm:gap-4 xl:grid-cols-4">
-        <Metric
-          label="Patrimônio total"
-          value={formatCurrency(total.wealth)}
-          caption="Contas + investimentos · posição atual"
-          Icon={Wallet}
-          accent
-        />
-        <Metric
-          label="Saldo das contas"
-          value={formatCurrency(total.cash)}
-          caption={`${data.accounts?.length || 0} contas cadastradas`}
-          Icon={Wallet}
-        />
-        <Metric
-          label="Investimentos"
-          value={formatCurrency(total.value)}
-          caption={`Custo: ${formatCurrency(total.cost)}`}
-          Icon={ChartNoAxesCombined}
-        />
-        <Metric
-          label="Resultado total"
-          value={formatCurrency(total.result)}
-          caption={`Valorização: ${total.rate.toFixed(2)}%`}
-          Icon={TrendingUp}
-          tone={resultTone}
-        />
-      </div>
+      {/* Composição Principal: Patrimônio Protagonista + Fluxo Financeiro Unificado */}
+      <div className="grid gap-5 xl:grid-cols-[1.45fr_1fr]">
+        {/* Painel Protagonista de Patrimônio */}
+        <section
+          aria-label="Resumo patrimonial"
+          className="hero-metric flex flex-col justify-between rounded-3xl p-6 sm:p-7"
+        >
+          <div>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Patrimônio total</p>
+                <p className="text-xs text-muted-foreground/80">
+                  Contas + investimentos · posição atual
+                </p>
+              </div>
 
-      <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4">
-        <Metric
-          label="Receitas no período"
-          value={formatCurrency(f.income)}
-          Icon={ArrowDownLeft}
-          caption="Receitas pagas"
-          tone={f.income.gt(0) ? "gain" : "neutral"}
-        />
-        <Metric
-          label="Despesas no período"
-          value={formatCurrency(f.expense)}
-          Icon={ArrowUpRight}
-          caption="Despesas pagas"
-          tone={f.expense.gt(0) ? "loss" : "neutral"}
-        />
-        <div className="col-span-2 sm:col-span-1">
-          <Metric
-            label="Saldo do período"
-            value={formatCurrency(f.balance)}
-            caption="Receitas menos despesas"
-            tone={balanceTone}
-          />
-        </div>
+              <div
+                className={cn(
+                  "inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-2xl border px-3.5 py-2 text-xs font-semibold tabular sm:rounded-full sm:py-1.5",
+                  resultTone === "gain"
+                    ? "border-gain/30 bg-gain/12 text-gain"
+                    : resultTone === "loss"
+                      ? "border-loss/30 bg-loss/12 text-loss"
+                      : "border-glass-border bg-glass-light-bg text-muted-foreground",
+                )}
+              >
+                {resultTone === "loss" ? (
+                  <TrendingDown className="size-3.5" />
+                ) : (
+                  <TrendingUp className="size-3.5" />
+                )}
+                <span className="whitespace-nowrap">
+                  Resultado total:{" "}
+                  {total.result.gt(0) ? "+" : ""}
+                  {formatCurrency(total.result)}
+                </span>
+                <span aria-hidden="true">·</span>
+                <span className="whitespace-nowrap">
+                  Valorização: {total.rate.gt(0) ? "+" : ""}
+                  {total.rate.toFixed(2)}%
+                </span>
+              </div>
+            </div>
+
+            <p className="metric-value mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-[42px]">
+              {formatCurrency(total.wealth)}
+            </p>
+          </div>
+
+          {/* Composição de Apoio: Contas e Investimentos */}
+          <div className="mt-6 grid gap-4 border-t border-border pt-5 sm:grid-cols-2 sm:gap-0">
+            <div className="sm:border-r sm:border-border sm:pr-5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-medium text-muted-foreground sm:text-sm">
+                  Saldo das contas
+                </span>
+                <Link
+                  href="/contas"
+                  className="text-xs font-medium text-primary hover:underline"
+                >
+                  {data.accounts?.length || 0} contas cadastradas
+                </Link>
+              </div>
+              <p className="metric-value mt-2 text-xl font-semibold text-foreground sm:text-2xl">
+                {formatCurrency(total.cash)}
+              </p>
+            </div>
+
+            <div className="border-t border-border pt-4 sm:border-t-0 sm:py-0 sm:pl-5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-medium text-muted-foreground sm:text-sm">
+                  Investimentos
+                </span>
+                <span className="text-xs text-muted-foreground tabular">
+                  Custo: {formatCurrency(total.cost)}
+                </span>
+              </div>
+              <p className="metric-value mt-2 text-xl font-semibold text-foreground sm:text-2xl">
+                {formatCurrency(total.value)}
+              </p>
+            </div>
+          </div>
+
+          {/* Desdobramento de Resultados da Carteira */}
+          <div className="mt-5 grid grid-cols-1 gap-4 border-t border-border/60 pt-5 min-[480px]:grid-cols-3">
+            <div>
+              <p className="text-xs text-muted-foreground">Lucro realizado</p>
+              <p
+                className={cn(
+                  "mt-1 text-sm font-semibold tabular sm:text-base",
+                  realizedTone === "gain"
+                    ? "text-gain"
+                    : realizedTone === "loss"
+                      ? "text-loss"
+                      : "text-foreground",
+                )}
+              >
+                {formatCurrency(total.realized)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Lucro não realizado</p>
+              <p
+                className={cn(
+                  "mt-1 text-sm font-semibold tabular sm:text-base",
+                  unrealizedTone === "gain"
+                    ? "text-gain"
+                    : unrealizedTone === "loss"
+                      ? "text-loss"
+                      : "text-foreground",
+                )}
+              >
+                {formatCurrency(total.unrealized)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Dividendos e proventos</p>
+              <p
+                className={cn(
+                  "mt-1 text-sm font-semibold tabular sm:text-base",
+                  total.income.gt(0) ? "text-gain" : "text-foreground",
+                )}
+              >
+                {formatCurrency(total.income)}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Conjunto Visual Unificado de Fluxo Financeiro */}
+        <section
+          aria-label="Fluxo financeiro do período"
+          className="card flex flex-col justify-between rounded-3xl p-6 sm:p-7"
+        >
+          <div>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-base font-semibold tracking-tight text-foreground">
+                  Fluxo financeiro do período
+                </h2>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Comparativo entre entradas, saídas e resultado líquido
+                </p>
+              </div>
+              <span
+                className={cn(
+                  "badge",
+                  balanceTone === "gain"
+                    ? "badge-gain"
+                    : balanceTone === "loss"
+                      ? "badge-loss"
+                      : "badge-primary",
+                )}
+              >
+                {balanceTone === "gain"
+                  ? "Superávit"
+                  : balanceTone === "loss"
+                    ? "Déficit"
+                    : "Equilíbrio"}
+              </span>
+            </div>
+
+            <div className="mt-5 border-b border-border pb-5">
+              <p className="text-xs font-medium text-muted-foreground sm:text-sm">
+                Saldo do período
+              </p>
+              <p
+                className={cn(
+                  "metric-value mt-1.5 text-2xl font-semibold tracking-tight sm:text-3xl",
+                  balanceTone === "gain"
+                    ? "text-gain"
+                    : balanceTone === "loss"
+                      ? "text-loss"
+                      : "text-foreground",
+                )}
+              >
+                {f.balance.gt(0) ? "+ " : f.balance.lt(0) ? "− " : ""}
+                {formatCurrency(f.balance.abs())}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Receitas menos despesas pagas</p>
+            </div>
+          </div>
+
+          <div className="mt-5 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground sm:text-sm">
+                  <ArrowDownLeft className="size-4 text-gain" />
+                  <span>Receitas no período</span>
+                </div>
+                <p
+                  className={cn(
+                    "metric-value text-lg font-semibold sm:text-xl",
+                    f.income.gt(0) ? "text-gain" : "text-foreground",
+                  )}
+                >
+                  {formatCurrency(f.income)}
+                </p>
+                <p className="text-xs text-muted-foreground">Receitas pagas</p>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground sm:text-sm">
+                  <ArrowUpRight className="size-4 text-loss" />
+                  <span>Despesas no período</span>
+                </div>
+                <p
+                  className={cn(
+                    "metric-value text-lg font-semibold sm:text-xl",
+                    f.expense.gt(0) ? "text-loss" : "text-foreground",
+                  )}
+                >
+                  {formatCurrency(f.expense)}
+                </p>
+                <p className="text-xs text-muted-foreground">Despesas pagas</p>
+              </div>
+            </div>
+
+            {/* Barra de proporção Receitas vs Despesas */}
+            <div className="space-y-1.5 pt-1">
+              <div className="flex h-2 w-full overflow-hidden rounded-full bg-muted">
+                {flowTotal > 0 ? (
+                  <>
+                    <div
+                      className="h-full bg-gain transition-all duration-300"
+                      style={{ width: `${incomeShare}%` }}
+                    />
+                    <div
+                      className="h-full bg-loss transition-all duration-300"
+                      style={{ width: `${100 - incomeShare}%` }}
+                    />
+                  </>
+                ) : (
+                  <div className="h-full w-full bg-muted" />
+                )}
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground tabular">
+                <span>
+                  Entradas: {flowTotal > 0 ? `${incomeShare}%` : "0%"}
+                </span>
+                <span>
+                  Saídas: {flowTotal > 0 ? `${100 - incomeShare}%` : "0%"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
       {pendingList.length > 0 && (
         <section className="card overflow-hidden border-warning/30">
-          <div className="flex items-center justify-between border-b bg-warning/5 px-5 py-3.5">
+          <div className="flex items-center justify-between border-b border-border bg-warning/8 px-5 py-3.5 sm:px-6">
             <div className="flex items-center gap-2">
               <Clock className="size-4 text-warning" />
-              <h2 className="text-sm font-semibold">Contas e lançamentos pendentes</h2>
+              <h2 className="text-base font-semibold">Contas e lançamentos pendentes</h2>
             </div>
             <Link href="/transacoes" className="text-xs font-medium text-primary hover:underline">
               Ver todos ({data.transactions?.filter((t) => t.status === "pending").length})
             </Link>
           </div>
-          <div className="divide-y">
+          <div className="divide-y divide-border">
             {pendingList.map((t) => (
-              <div key={t.id} className="flex items-center justify-between gap-3 px-5 py-3">
+              <div key={t.id} className="flex items-center justify-between gap-3 px-5 py-3.5 sm:px-6">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{text(t.description)}</p>
                   <p className="mt-0.5 text-xs text-muted-foreground">
@@ -518,7 +702,7 @@ export function Dashboard() {
                         values: { ...projectTx(t), status: "paid" },
                       })
                     }
-                    className="h-8 px-2.5 text-xs"
+                    className="h-8 px-3 text-xs"
                   >
                     <Check className="size-3.5 text-primary" />
                     Efetivar
@@ -530,16 +714,17 @@ export function Dashboard() {
         </section>
       )}
 
-      <div className="grid gap-5 md:gap-6 xl:grid-cols-[1.65fr_1fr]">
+      {/* Gráficos Principais: Evolução e Alocação */}
+      <div className="grid gap-5 xl:grid-cols-[1.45fr_1fr]">
         <section className="card min-w-0 p-5 sm:p-6">
-          <div className="mb-5 flex items-center justify-between gap-2">
+          <div className="mb-4 flex items-center justify-between gap-2">
             <div>
-              <h2 className="text-sm font-semibold">Evolução do patrimônio</h2>
-              <p className="mt-0.5 text-xs text-muted-foreground">
+              <h2 className="text-base font-semibold tracking-tight">Evolução do patrimônio</h2>
+              <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
                 Consolidação de contas e investimentos no período
               </p>
             </div>
-            <span className="badge">R$</span>
+            <span className="badge">BRL (R$)</span>
           </div>
           {data.accounts?.length || data.holdings?.length ? (
             <EvolutionChart data={history} />
@@ -549,18 +734,25 @@ export function Dashboard() {
               description="Adicione uma conta e seus primeiros investimentos para visualizar a evolução."
             />
           )}
-          <p className="mt-3 text-[11px] text-muted-foreground">
+          <p className="mt-3 text-xs text-muted-foreground">
             Posições históricas sem cotação são estimadas pelo custo. Saldos iniciais passam a
             valer na criação da conta.
           </p>
         </section>
 
         <section className="card min-w-0 p-5 sm:p-6">
-          <h2 className="text-sm font-semibold">Alocação dos investimentos</h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Distribuição atual por classe de ativo
-          </p>
-          <div className="mt-4">
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <div>
+              <h2 className="text-base font-semibold tracking-tight">Alocação dos investimentos</h2>
+              <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+                Distribuição atual por classe de ativo
+              </p>
+            </div>
+            <Link href="/investimentos" className="text-xs font-medium text-primary hover:underline">
+              Carteira
+            </Link>
+          </div>
+          <div>
             {alloc.length ? (
               <AllocationChart data={alloc} />
             ) : (
@@ -573,104 +765,99 @@ export function Dashboard() {
         </section>
       </div>
 
-      <div className="grid gap-5 md:gap-6 xl:grid-cols-2">
+      {/* Gráficos Secundários: Receitas x Despesas e Rentabilidade por Carteira */}
+      <div className="grid gap-5 xl:grid-cols-2">
         <section className="card min-w-0 p-5 sm:p-6">
-          <h2 className="mb-5 text-sm font-semibold">Receitas × despesas</h2>
+          <div className="mb-4">
+            <h2 className="text-base font-semibold tracking-tight">Receitas × despesas</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+              Evolução do fluxo mensal efetivado
+            </p>
+          </div>
           <FlowChart data={history} />
         </section>
+
         <section className="card min-w-0 p-5 sm:p-6">
-          <h2 className="mb-5 text-sm font-semibold">Rentabilidade por carteira</h2>
+          <div className="mb-4">
+            <h2 className="text-base font-semibold tracking-tight">Rentabilidade por carteira</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+              Valorização atual sobre o custo remanescente
+            </p>
+          </div>
           {ps.length ? (
             <ReturnChart data={returns} />
           ) : (
             <Empty title="Sem posições registradas" />
           )}
-          <p className="mt-2 text-[11px] text-muted-foreground">
+          <p className="mt-3 text-xs text-muted-foreground">
             Valorização atual / custo remanescente. Não inclui proventos.
           </p>
         </section>
       </div>
 
-      <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4">
-        <Metric
-          label="Lucro realizado"
-          value={formatCurrency(total.realized)}
-          caption="Acumulado nas vendas"
-          tone={realizedTone}
-        />
-        <Metric
-          label="Lucro não realizado"
-          value={formatCurrency(total.unrealized)}
-          caption="Valor atual menos custo"
-          tone={unrealizedTone}
-        />
-        <div className="col-span-2 sm:col-span-1">
-          <Metric
-            label="Dividendos e proventos"
-            value={formatCurrency(total.income)}
-            caption="Rendimentos acumulados"
-            tone={total.income.gt(0) ? "gain" : "neutral"}
-          />
-        </div>
-      </div>
-
-      <div className="grid gap-5 md:gap-6 xl:grid-cols-2">
+      {/* Movimentações Recentes e Objetivos */}
+      <div className="grid gap-5 xl:grid-cols-2">
         <section className="card overflow-hidden">
-          <div className="flex items-center justify-between border-b px-5 py-4">
-            <h2 className="text-sm font-semibold">Últimas transações</h2>
+          <div className="flex items-center justify-between border-b border-border px-5 py-4 sm:px-6">
+            <h2 className="text-base font-semibold tracking-tight">Últimas transações</h2>
             <Link
               href="/transacoes"
               className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
             >
-              Ver todas <ArrowRight className="size-3" />
+              Ver todas <ArrowRight className="size-3.5" />
             </Link>
           </div>
           <RecentTransactions rows={recent} data={data} />
         </section>
 
         <section className="card p-5 sm:p-6">
-          <div className="mb-5 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Seus próximos objetivos</h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-base font-semibold tracking-tight">Seus próximos objetivos</h2>
             <Link href="/metas" className="text-xs font-medium text-primary hover:underline">
               Ver metas
             </Link>
           </div>
           {data.goals?.length ? (
-            data.goals
-              .filter((g) => g.status !== "cancelled")
-              .slice(0, 4)
-              .map((g) => {
-                const p = goalProgress(g);
-                const pct = Math.min(100, Math.max(0, p.percent));
-                return (
-                  <div key={g.id} className="mb-5 last:mb-0">
-                    <div className="flex justify-between text-sm">
-                      <span className="font-medium">{text(g.name)}</span>
-                      <span className="tabular font-semibold text-primary">
-                        {p.percent.toFixed(0)}%
-                      </span>
-                    </div>
+            <div className="divide-y divide-border">
+              {data.goals
+                .filter((g) => g.status !== "cancelled")
+                .slice(0, 4)
+                .map((g) => {
+                  const p = goalProgress(g);
+                  const pct = Math.min(100, Math.max(0, p.percent));
+                  return (
                     <div
-                      role="progressbar"
-                      aria-valuenow={Math.round(pct)}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      className="my-2 h-2 w-full overflow-hidden rounded-full bg-muted"
+                      key={g.id}
+                      className="py-4 first:pt-0 last:pb-0"
                     >
+                      <div className="flex justify-between text-sm">
+                        <span className="font-semibold text-foreground">{text(g.name)}</span>
+                        <span className="tabular font-semibold text-primary">
+                          {p.percent.toFixed(0)}%
+                        </span>
+                      </div>
                       <div
-                        className="h-full rounded-full bg-primary transition-all duration-300"
-                        style={{ width: `${pct}%` }}
-                      />
+                        role="progressbar"
+                        aria-valuenow={Math.round(pct)}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        className="my-2.5 h-2 w-full overflow-hidden rounded-full bg-muted"
+                      >
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-300"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span className="tabular">
+                          {formatCurrency(p.saved)} de {formatCurrency(p.target)}
+                        </span>
+                        <span>Prazo: {formatDate(text(g.deadline))}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-[11px] text-muted-foreground">
-                      <span className="tabular">
-                        {formatCurrency(p.saved)} de {formatCurrency(p.target)}
-                      </span>
-                      <span>{formatDate(text(g.deadline))}</span>
-                    </div>
-                  </div>
-                );
-              })
+                  );
+                })}
+            </div>
           ) : (
             <Empty
               title="Qual é sua próxima conquista?"
@@ -680,20 +867,24 @@ export function Dashboard() {
         </section>
       </div>
 
-      <div className="grid gap-5 md:gap-6 xl:grid-cols-2">
+      {/* Últimas Operações e Radar de Alertas */}
+      <div className="grid gap-5 xl:grid-cols-2">
         <section className="card p-5 sm:p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Últimas operações</h2>
+            <h2 className="text-base font-semibold tracking-tight">Últimas operações</h2>
             <Link href="/operacoes" className="text-xs font-medium text-primary hover:underline">
               Ver todas
             </Link>
           </div>
           {operations.length ? (
-            <div className="divide-y">
+            <div className="divide-y divide-border">
               {operations.map((o) => (
-                <div key={o.id} className="flex items-center justify-between py-3 text-sm first:pt-0 last:pb-0">
+                <div
+                  key={o.id}
+                  className="flex items-center justify-between py-3.5 text-sm first:pt-0 last:pb-0"
+                >
                   <div>
-                    <p className="font-medium">
+                    <p className="font-semibold text-foreground">
                       {text(data.assets?.find((a) => a.id === o.asset_id)?.ticker)} ·{" "}
                       {labels[text(o.type)]}
                     </p>
@@ -701,7 +892,9 @@ export function Dashboard() {
                       {formatDate(text(o.operation_date))}
                     </p>
                   </div>
-                  <span className="tabular font-medium">{formatCurrency(text(o.total_amount))}</span>
+                  <span className="tabular font-semibold text-foreground">
+                    {formatCurrency(text(o.total_amount))}
+                  </span>
                 </div>
               ))}
             </div>
@@ -712,21 +905,21 @@ export function Dashboard() {
 
         <section className="card p-5 sm:p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold">No seu radar</h2>
+            <h2 className="text-base font-semibold tracking-tight">No seu radar</h2>
             <Link href="/analises" className="text-xs font-medium text-primary hover:underline">
               Análise completa
             </Link>
           </div>
           {alerts.length ? (
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {alerts.slice(0, 4).map((a, i) => (
                 <div
                   key={i}
                   className={cn(
-                    "flex gap-3 rounded-xl border p-3.5",
+                    "flex gap-3 rounded-2xl border p-4",
                     a.severity === "danger"
-                      ? "border-loss/25 bg-loss/5"
-                      : "border-warning/25 bg-warning/5",
+                      ? "border-loss/30 bg-loss/8"
+                      : "border-warning/30 bg-warning/8",
                   )}
                 >
                   <TriangleAlert
@@ -736,7 +929,7 @@ export function Dashboard() {
                     )}
                   />
                   <div>
-                    <p className="text-xs font-semibold">{a.title}</p>
+                    <p className="text-sm font-semibold text-foreground">{a.title}</p>
                     <p className="mt-1 text-xs leading-5 text-muted-foreground">{a.description}</p>
                   </div>
                 </div>
@@ -752,7 +945,7 @@ export function Dashboard() {
               href="/orcamentos"
               className="mt-4 inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
             >
-              Revisar orçamentos <ArrowRight className="size-3" />
+              Revisar orçamentos <ArrowRight className="size-3.5" />
             </Link>
           )}
         </section>

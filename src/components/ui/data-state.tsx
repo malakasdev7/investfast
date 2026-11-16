@@ -23,39 +23,40 @@ export function Loading() {
         <div className="space-y-2">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-8 w-56 md:w-72" />
-          <Skeleton className="h-4 w-44" />
+          <Skeleton className="h-4 w-48" />
         </div>
         <div className="flex gap-2">
-          <Skeleton className="h-10 w-28 rounded-xl" />
+          <Skeleton className="h-10 w-32 rounded-xl" />
           <Skeleton className="h-10 w-36 rounded-xl" />
         </div>
       </div>
 
-      {/* Metric Cards Skeleton */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="card p-4 sm:p-5">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-3 w-20" />
-              <Skeleton className="size-8 rounded-lg" />
-            </div>
-            <Skeleton className="mt-3 h-7 w-32 sm:h-8 sm:w-40" />
-            <Skeleton className="mt-2 h-3 w-28" />
+      {/* Hero Net Worth Skeleton */}
+      <div className="hero-metric rounded-2xl p-6 sm:p-7">
+        <div className="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-36" />
+            <Skeleton className="h-11 w-56 sm:w-72" />
+            <Skeleton className="h-5 w-48" />
           </div>
-        ))}
+          <div className="grid grid-cols-2 gap-4">
+            <Skeleton className="h-20 rounded-xl" />
+            <Skeleton className="h-20 rounded-xl" />
+          </div>
+        </div>
       </div>
 
       {/* Charts / Main Sections Skeleton */}
-      <div className="grid gap-5 md:gap-6 xl:grid-cols-[1.65fr_1fr]">
-        <div className="card p-5">
+      <div className="grid gap-5 md:gap-6 xl:grid-cols-[1.6fr_1fr]">
+        <div className="card p-5 sm:p-6">
           <div className="flex items-center justify-between border-b pb-4">
             <div className="space-y-1.5">
               <Skeleton className="h-4 w-36" />
-              <Skeleton className="h-3 w-52" />
+              <Skeleton className="h-3.5 w-52" />
             </div>
             <Skeleton className="h-6 w-12 rounded-md" />
           </div>
-          <div className="mt-6 flex h-56 items-end gap-3 px-2 sm:h-64">
+          <div className="mt-6 flex h-48 items-end gap-3 px-2 sm:h-56">
             {[40, 65, 45, 80, 55, 90, 70, 85, 95].map((height, idx) => (
               <div
                 key={idx}
@@ -65,38 +66,15 @@ export function Loading() {
             ))}
           </div>
         </div>
-        <div className="card p-5">
+        <div className="card p-5 sm:p-6">
           <div className="space-y-1.5 border-b pb-4">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-3 w-40" />
+            <Skeleton className="h-4 w-36" />
+            <Skeleton className="h-3.5 w-44" />
           </div>
           <div className="mt-8 flex items-center justify-center">
-            <Skeleton className="size-44 rounded-full border-8 border-card" />
+            <Skeleton className="size-40 rounded-full border-8 border-card" />
           </div>
         </div>
-      </div>
-
-      {/* Recent items / Table Skeleton */}
-      <div className="card divide-y">
-        <div className="flex items-center justify-between p-4 sm:p-5">
-          <Skeleton className="h-4 w-40" />
-          <Skeleton className="h-4 w-20" />
-        </div>
-        {[1, 2, 3, 4].map((row) => (
-          <div key={row} className="flex items-center justify-between p-4 sm:p-5">
-            <div className="flex items-center gap-3">
-              <Skeleton className="size-10 rounded-xl" />
-              <div className="space-y-1.5">
-                <Skeleton className="h-4 w-36 sm:w-48" />
-                <Skeleton className="h-3 w-24" />
-              </div>
-            </div>
-            <div className="space-y-1.5 text-right">
-              <Skeleton className="ml-auto h-4 w-20" />
-              <Skeleton className="ml-auto h-3 w-12" />
-            </div>
-          </div>
-        ))}
       </div>
       <span className="sr-only">Carregando dados</span>
     </div>
@@ -143,14 +121,14 @@ export function Empty({
   icon?: typeof FolderOpen;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center px-4 py-12 text-center sm:px-6 sm:py-16">
-      <div className="mb-4 flex size-14 items-center justify-center rounded-2xl border border-border bg-muted/40 text-muted-foreground shadow-2xs">
-        <Icon className="size-6 stroke-[1.75]" />
+    <div className="flex flex-col items-center justify-center px-4 py-9 text-center sm:px-6 sm:py-11">
+      <div className="mb-3.5 flex size-12 items-center justify-center rounded-2xl border border-glass-border bg-glass-light-bg text-muted-foreground">
+        <Icon className="size-5 stroke-[1.75]" />
       </div>
       <h3 className="text-sm font-semibold tracking-tight text-foreground sm:text-base">
         {title}
       </h3>
-      <p className="mx-auto mb-5 mt-1.5 max-w-sm text-xs leading-5 text-muted-foreground sm:text-sm">
+      <p className="mx-auto mb-4 mt-1 max-w-sm text-xs leading-5 text-muted-foreground sm:text-sm">
         {description}
       </p>
       {children && <div className="flex flex-wrap justify-center gap-2">{children}</div>}

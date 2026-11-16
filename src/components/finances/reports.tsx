@@ -119,7 +119,7 @@ export function Reports({ analysis = false }: { analysis?: boolean }) {
     <div className="space-y-5 md:space-y-6">
       <nav
         aria-label="Subnavegação de relatórios e análises"
-        className="no-scrollbar -mx-3.5 flex gap-1.5 overflow-x-auto border-b px-3.5 pb-3 sm:mx-0 sm:border-0 sm:px-0 sm:pb-0"
+        className="glass-navigation no-scrollbar flex w-full items-center gap-1.5 overflow-x-auto rounded-2xl border p-1.5 sm:w-fit"
       >
         {[
           ["/relatorios", "Relatórios", !analysis],
@@ -133,10 +133,10 @@ export function Reports({ analysis = false }: { analysis?: boolean }) {
             href={String(href)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "inline-flex shrink-0 items-center rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors",
+              "inline-flex shrink-0 items-center rounded-xl px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
               active
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "border bg-card text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "glass-nav-active font-semibold text-foreground"
+                : "text-muted-foreground hover:bg-glass-light-bg hover:text-foreground",
             )}
           >
             {String(label)}
@@ -146,7 +146,7 @@ export function Reports({ analysis = false }: { analysis?: boolean }) {
 
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[.2em] text-primary">
+          <p className="section-kicker">
             Perspectiva para decidir
           </p>
           <h1 className="page-heading">
@@ -229,16 +229,32 @@ export function Reports({ analysis = false }: { analysis?: boolean }) {
         <FinancialAnalysis data={filtered} period={period} />
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <Metric label="Receitas do período" value={formatCurrency(f.income)} />
-            <Metric label="Despesas do período" value={formatCurrency(f.expense)} />
-            <Metric label="Saldo do período" value={formatCurrency(f.balance)} />
-            <Metric label="Proventos do período" value={formatCurrency(sum(dividends, "amount"))} />
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+            <Metric
+              label="Receitas do período"
+              value={formatCurrency(f.income)}
+              tone={f.income.gt(0) ? "gain" : "neutral"}
+            />
+            <Metric
+              label="Despesas do período"
+              value={formatCurrency(f.expense)}
+              tone={f.expense.gt(0) ? "loss" : "neutral"}
+            />
+            <Metric
+              label="Saldo do período"
+              value={formatCurrency(f.balance)}
+              tone={f.balance.gt(0) ? "gain" : f.balance.lt(0) ? "loss" : "neutral"}
+            />
+            <Metric
+              label="Proventos do período"
+              value={formatCurrency(sum(dividends, "amount"))}
+              tone={sum(dividends, "amount").gt(0) ? "gain" : "neutral"}
+            />
           </div>
 
-          <div className="grid gap-6 xl:grid-cols-2">
-            <section className="card min-w-0 p-5">
-              <h2 className="mb-5 font-semibold">Receitas × despesas</h2>
+          <div className="grid gap-5 xl:grid-cols-2">
+            <section className="card min-w-0 p-5 sm:p-6">
+              <h2 className="mb-4 text-base font-semibold tracking-tight">Receitas × despesas</h2>
               <FlowChart
                 data={history.map((point) => {
                   const start = point.date.slice(0, 7) + "-01";
@@ -255,29 +271,33 @@ export function Reports({ analysis = false }: { analysis?: boolean }) {
                 })}
               />
             </section>
-            <section className="card min-w-0 p-5">
-              <h2 className="mb-5 font-semibold">Gastos por categoria</h2>
+            <section className="card min-w-0 p-5 sm:p-6">
+              <h2 className="mb-4 text-base font-semibold tracking-tight">Gastos por categoria</h2>
               {categories.length ? (
                 <AllocationChart data={categories} />
               ) : (
                 <Empty title="Nenhuma despesa neste período" />
               )}
             </section>
-            <section className="card min-w-0 p-5">
-              <h2 className="mb-5 font-semibold">Evolução do patrimônio consolidado</h2>
+            <section className="card min-w-0 p-5 sm:p-6">
+              <h2 className="mb-4 text-base font-semibold tracking-tight">
+                Evolução do patrimônio consolidado
+              </h2>
               <EvolutionChart data={history} />
-              <p className="text-[11px] text-muted-foreground">
+              <p className="mt-3 text-xs text-muted-foreground">
                 Todas as contas e carteiras. Posições sem cotação histórica são estimadas pelo custo.
               </p>
             </section>
-            <section className="card min-w-0 p-5">
-              <h2 className="mb-5 font-semibold">Alocação atual</h2>
+            <section className="card min-w-0 p-5 sm:p-6">
+              <h2 className="mb-4 text-base font-semibold tracking-tight">Alocação atual</h2>
               <AllocationChart data={allocation(filtered)} />
             </section>
           </div>
 
-          <section className="card p-5">
-            <h2 className="mb-5 font-semibold">Rentabilidade por carteira</h2>
+          <section className="card p-5 sm:p-6">
+            <h2 className="mb-4 text-base font-semibold tracking-tight">
+              Rentabilidade por carteira
+            </h2>
             <ReturnChart
               data={(data.portfolios ?? [])
                 .filter((p) => !filters.portfolio_id || p.id === filters.portfolio_id)

@@ -10,13 +10,13 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const colorPalette = [
-  "#1e40af",
-  "#0d9488",
-  "#6366f1",
+  "#2563eb",
   "#0284c7",
+  "#0d9488",
+  "#15803d",
   "#d97706",
   "#dc2626",
-  "#64748b",
+  "#475569",
   "#0f172a",
 ];
 
@@ -223,8 +223,10 @@ export function RecordForm({
                   clearErrors();
                 }}
                 className={cn(
-                  "rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all",
-                  type === tab.id ? tab.active : "bg-background text-muted-foreground hover:bg-muted/60",
+                  "cursor-pointer rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all sm:text-sm",
+                  type === tab.id
+                    ? tab.active
+                    : "border-glass-border bg-glass-light-bg text-muted-foreground hover:border-border-strong hover:text-foreground",
                 )}
               >
                 {tab.label}
@@ -403,18 +405,18 @@ export function RecordForm({
       </div>
 
       {previewTotal && (
-        <div className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-xs">
-          <span className="flex items-center gap-2 font-medium text-muted-foreground">
+        <div className="flex items-center justify-between rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3.5 text-sm">
+          <span className="flex items-center gap-2 font-medium text-foreground">
             <Sparkles className="size-4 text-primary" />
             Valor total estimado da operação
           </span>
-          <span className="tabular text-sm font-semibold text-foreground">
+          <span className="tabular text-base font-semibold text-foreground">
             {formatCurrency(previewTotal.net)}
           </span>
         </div>
       )}
 
-      <div className="record-form-actions flex justify-end gap-3 border-t pt-4">
+      <div className="record-form-actions flex justify-end gap-3 border-t border-border pt-4">
         <Button type="button" variant="outline" onClick={onDone}>
           Cancelar
         </Button>
