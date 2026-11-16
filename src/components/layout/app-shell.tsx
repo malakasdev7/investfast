@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowUpRight,
@@ -123,6 +123,9 @@ export function AppShell({
   const { data } = useFinances();
   const [menuOpen, setMenuOpen] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
+  const [dragTab, setDragTab] = useState<number | null>(null);
+  const dockGesture = useRef<{ x: number; y: number; dragging: boolean; target: number | null } | null>(null);
+  const suppressDockClick = useRef(false);
   const [quickEntity, setQuickEntity] = useState<{ entity: string; title: string } | null>(null);
 
   useEffect(() => {
@@ -168,6 +171,66 @@ export function AppShell({
     { label: "Investir", href: "/investimentos", Icon: ChartNoAxesCombined },
     { label: "IA", href: "/assistente", Icon: Sparkles },
   ];
+
+  function nearestDockTab(nav: HTMLElement, x: number) {
+    const tabs = Array.from(nav.querySelectorAll<HTMLElement>("[data-dock-tab]"));
+    let closest: number | null = null;
+    let distance = Infinity;
+    for (const tab of tabs) {
+      const rect = tab.getBoundingClientRect();
+      const nextDistance = Math.abs(x - (rect.left + rect.width / 2));
+      if (nextDistance < distance) {
+        distance = nextDistance;
+        closest = Number(tab.dataset.dockTab);
+      }
+    }
+    return closest;
+  }
+
+  function startDockGesture(event: ReactPointerEvent<HTMLElement>) {
+    if (event.pointerType !== "touch" || menuOpen || quickOpen) return;
+    suppressDockClick.current = false;
+    dockGesture.current = { x: event.clientX, y: event.clientY, dragging: false, target: null };
+  }
+
+  function moveDockGesture(event: ReactPointerEvent<HTMLElement>) {
+    const gesture = dockGesture.current;
+    if (!gesture) return;
+    const dx = event.clientX - gesture.x;
+    const dy = event.clientY - gesture.y;
+    if (!gesture.dragging && Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) {
+      dockGesture.current = null;
+      return;
+    }
+    if (!gesture.dragging && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
+      gesture.dragging = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
+    if (gesture.dragging) {
+      gesture.target = nearestDockTab(event.currentTarget, event.clientX);
+      setDragTab(gesture.target);
+    }
+  }
+
+  function endDockGesture(event: ReactPointerEvent<HTMLElement>, canceled = false) {
+    const gesture = dockGesture.current;
+    dockGesture.current = null;
+    setDragTab(null);
+    if (!gesture?.dragging) return;
+    suppressDockClick.current = true;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    if (!canceled && gesture.target !== null) {
+      const currentIndex = dockTabs.findIndex((tab) => isRouteActive(path, tab.href));
+      const dx = event.clientX - gesture.x;
+      const destination = gesture.target === currentIndex && Math.abs(dx) >= 30
+        ? Math.max(0, Math.min(dockTabs.length - 1, currentIndex + (dx > 0 ? 1 : -1)))
+        : gesture.target;
+      const target = dockTabs[destination];
+      if (target && !isRouteActive(path, target.href)) router.push(target.href);
+    }
+  }
 
   const isMoreActive = !dockTabs.some((t) => isRouteActive(path, t.href));
 
@@ -565,14 +628,26 @@ export function AppShell({
       {/* Bottom Mobile Dock Navigation com glass-navigation */}
       <nav
         aria-label="Navegação inferior no celular"
-        className="mobile-dock fixed inset-x-0 bottom-0 z-50 px-2 pt-1.5 lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(10px,env(safe-area-inset-bottom))] lg:hidden"
+        onPointerDown={startDockGesture}
+        onPointerMove={moveDockGesture}
+        onPointerUp={endDockGesture}
+        onPointerCancel={(event) => endDockGesture(event, true)}
+        onClickCapture={(event) => {
+          if (suppressDockClick.current) {
+            event.preventDefault();
+            event.stopPropagation();
+            suppressDockClick.current = false;
+          }
+        }}
       >
-        <div className="mx-auto grid max-w-lg grid-cols-6 items-center gap-0.5">
-          {dockTabs.slice(0, 2).map(({ href, label, Icon }) => {
-            const active = !menuOpen && !quickOpen && isRouteActive(path, href);
+        <div className="mobile-dock mx-auto grid max-w-lg grid-cols-6 items-center gap-0.5 rounded-[26px] p-1.5">
+          {dockTabs.slice(0, 2).map(({ href, label, Icon }, index) => {
+            const active = !menuOpen && !quickOpen && (dragTab === null ? isRouteActive(path, href) : dragTab === index);
             return (
               <Link
                 key={href}
+                data-dock-tab={index}
                 href={href}
                 onClick={() => {
                   setMenuOpen(false);
@@ -581,10 +656,9 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
-                  active ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
+                  active ? "mobile-dock-active font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />}
                 <Icon className="size-5" />
                 <span className="truncate">{label}</span>
               </Link>
@@ -609,11 +683,13 @@ export function AppShell({
             </button>
           </div>
 
-          {dockTabs.slice(2, 4).map(({ href, label, Icon }) => {
-            const active = !menuOpen && !quickOpen && isRouteActive(path, href);
+          {dockTabs.slice(2, 4).map(({ href, label, Icon }, index) => {
+            const tabIndex = index + 2;
+            const active = !menuOpen && !quickOpen && (dragTab === null ? isRouteActive(path, href) : dragTab === tabIndex);
             return (
               <Link
                 key={href}
+                data-dock-tab={tabIndex}
                 href={href}
                 onClick={() => {
                   setMenuOpen(false);
@@ -622,10 +698,9 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
-                  active ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
+                  active ? "mobile-dock-active font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />}
                 <Icon className="size-5" />
                 <span className="truncate">{label}</span>
               </Link>
@@ -641,12 +716,9 @@ export function AppShell({
             }}
             className={cn(
               "relative flex min-h-12 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
-              menuOpen || isMoreActive ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
+              menuOpen || (isMoreActive && dragTab === null) ? "mobile-dock-active font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
             )}
           >
-            {(menuOpen || isMoreActive) && (
-              <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />
-            )}
             {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             <span>Menu</span>
           </button>
