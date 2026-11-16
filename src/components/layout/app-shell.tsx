@@ -124,9 +124,18 @@ export function AppShell({
   const [menuOpen, setMenuOpen] = useState(false);
   const [quickOpen, setQuickOpen] = useState(false);
   const [dragTab, setDragTab] = useState<number | null>(null);
+  const [dragPosition, setDragPosition] = useState<number | null>(null);
+  const [pendingTab, setPendingTab] = useState<{ from: string; index: number } | null>(null);
   const dockGesture = useRef<{ x: number; y: number; dragging: boolean; target: number | null } | null>(null);
   const suppressDockClick = useRef(false);
   const [quickEntity, setQuickEntity] = useState<{ entity: string; title: string } | null>(null);
+
+  useEffect(() => {
+    if (!pendingTab) return;
+    const timeout = window.setTimeout(() => setPendingTab(null), 2000);
+    return () => window.clearTimeout(timeout);
+  }, [pendingTab]);
+
 
   useEffect(() => {
     if (!menuOpen && !quickOpen) return;
@@ -209,6 +218,11 @@ export function AppShell({
     if (gesture.dragging) {
       gesture.target = nearestDockTab(event.currentTarget, event.clientX);
       setDragTab(gesture.target);
+      const dock = event.currentTarget.querySelector<HTMLElement>(".mobile-dock");
+      if (dock) {
+        const rect = dock.getBoundingClientRect();
+        setDragPosition(Math.max(8.33, Math.min(75, ((event.clientX - rect.left) / rect.width) * 100)));
+      }
     }
   }
 
@@ -216,6 +230,7 @@ export function AppShell({
     const gesture = dockGesture.current;
     dockGesture.current = null;
     setDragTab(null);
+    setDragPosition(null);
     if (!gesture?.dragging) return;
     suppressDockClick.current = true;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
@@ -228,11 +243,18 @@ export function AppShell({
         ? Math.max(0, Math.min(dockTabs.length - 1, currentIndex + (dx > 0 ? 1 : -1)))
         : gesture.target;
       const target = dockTabs[destination];
-      if (target && !isRouteActive(path, target.href)) router.push(target.href);
+      if (target && !isRouteActive(path, target.href)) {
+        setPendingTab({ from: path, index: destination });
+        router.push(target.href);
+      }
     }
   }
 
   const isMoreActive = !dockTabs.some((t) => isRouteActive(path, t.href));
+  const pendingIndex = pendingTab?.from === path ? pendingTab.index : null;
+  const activeDockTab = pendingIndex ?? dockTabs.findIndex((tab) => isRouteActive(path, tab.href));
+  const indicatorTab = dragTab ?? activeDockTab;
+  const indicatorSlots = [0, 1, 3, 4];
 
   const sidebarGroups = [
     {
@@ -641,9 +663,16 @@ export function AppShell({
           }
         }}
       >
-        <div className="mobile-dock mx-auto grid max-w-lg grid-cols-6 items-center gap-0.5 rounded-[26px] p-1.5">
+        <div className="mobile-dock relative mx-auto grid max-w-lg grid-cols-6 items-center gap-0.5 rounded-[26px] p-1.5">
+          {!menuOpen && !quickOpen && indicatorTab >= 0 && (
+            <span
+              aria-hidden="true"
+              className={cn("mobile-dock-indicator", dragPosition !== null && "mobile-dock-indicator-dragging")}
+              style={{ left: `${dragPosition ?? ((indicatorSlots[indicatorTab] + 0.5) / 6) * 100}%` }}
+            />
+          )}
           {dockTabs.slice(0, 2).map(({ href, label, Icon }, index) => {
-            const active = !menuOpen && !quickOpen && (dragTab === null ? isRouteActive(path, href) : dragTab === index);
+            const active = !menuOpen && !quickOpen && indicatorTab === index;
             return (
               <Link
                 key={href}
@@ -652,11 +681,12 @@ export function AppShell({
                 onClick={() => {
                   setMenuOpen(false);
                   setQuickOpen(false);
+                  if (!isRouteActive(path, href)) setPendingTab({ from: path, index });
                 }}
-                aria-current={active ? "page" : undefined}
+                aria-current={isRouteActive(path, href) ? "page" : undefined}
                 className={cn(
                   "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
-                  active ? "mobile-dock-active font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
+                  active ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <Icon className="size-5" />
@@ -665,7 +695,7 @@ export function AppShell({
             );
           })}
 
-          <div className="flex items-center justify-center">
+          <div className="relative flex items-center justify-center">
             <button
               type="button"
               aria-label="Novo registro rápido"
@@ -685,7 +715,7 @@ export function AppShell({
 
           {dockTabs.slice(2, 4).map(({ href, label, Icon }, index) => {
             const tabIndex = index + 2;
-            const active = !menuOpen && !quickOpen && (dragTab === null ? isRouteActive(path, href) : dragTab === tabIndex);
+            const active = !menuOpen && !quickOpen && indicatorTab === tabIndex;
             return (
               <Link
                 key={href}
@@ -694,11 +724,12 @@ export function AppShell({
                 onClick={() => {
                   setMenuOpen(false);
                   setQuickOpen(false);
+                  if (!isRouteActive(path, href)) setPendingTab({ from: path, index: tabIndex });
                 }}
-                aria-current={active ? "page" : undefined}
+                aria-current={isRouteActive(path, href) ? "page" : undefined}
                 className={cn(
                   "relative flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
-                  active ? "mobile-dock-active font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
+                  active ? "font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <Icon className="size-5" />
@@ -716,7 +747,7 @@ export function AppShell({
             }}
             className={cn(
               "relative flex min-h-12 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl py-1 text-[11px] font-medium transition-colors",
-              menuOpen || (isMoreActive && dragTab === null) ? "mobile-dock-active font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
+              menuOpen || (isMoreActive && dragTab === null && pendingIndex === null) ? "mobile-dock-active font-semibold text-foreground" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
