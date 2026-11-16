@@ -1,0 +1,57 @@
+-- Testes transacionais: nenhum usuário ou lançamento permanece após ROLLBACK.
+begin;
+insert into auth.users(id,email,raw_user_meta_data) values ('10000000-0000-4000-8000-000000000001','qa-one@investfast.invalid','{"name":"QA One"}'),('10000000-0000-4000-8000-000000000002','qa-two@investfast.invalid','{"name":"QA Two"}');
+insert into public.accounts(id,user_id,name,type) values('20000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000002','Outra pessoa','checking');
+set local role authenticated;
+select set_config('request.jwt.claim.sub','10000000-0000-4000-8000-000000000001',true);
+set constraints all immediate;
+do $$
+declare a uuid; b uuid; asset uuid; p uuid; p2 uuid; op uuid; tx uuid; goal uuid; n numeric; denied boolean:=false;
+begin
+ if (select count(*) from public.categories)<>17 then raise exception 'Seed/RLS categorias falhou'; end if;
+ if exists(select 1 from public.accounts where name='Outra pessoa') then raise exception 'Vazamento RLS'; end if;
+ insert into public.accounts(name,type,initial_balance) values('Principal','checking',1000) returning id into a;
+ insert into public.accounts(name,type,initial_balance) values('Reserva','savings',0) returning id into b;
+ insert into public.transactions(description,amount,type,account_id,destination_account_id,transaction_date) values('Transferir',200,'transfer',a,b,current_date) returning id into tx;
+ if (select current_balance from public.accounts where id=a)<>800 or (select current_balance from public.accounts where id=b)<>200 then raise exception 'Transferência incorreta'; end if;
+ update public.transactions set amount=150 where id=tx;
+ if (select current_balance from public.accounts where id=a)<>850 then raise exception 'Edição saldo incorreta'; end if;
+ update public.transactions set status='pending' where id=tx;
+ if (select current_balance from public.accounts where id=a)<>1000 then raise exception 'Pendente afeta saldo'; end if;
+ delete from public.transactions where id=tx;
+ begin
+  insert into public.transactions(description,amount,type,account_id,transaction_date) values('Ataque',1,'expense','20000000-0000-4000-8000-000000000002',current_date);
+ exception when foreign_key_violation then denied=true; end;
+ if not denied then raise exception 'FK permite vínculo entre usuários'; end if;
+ insert into public.assets(ticker,name,asset_class) values('QA','Ativo teste','stock') returning id into asset;
+ select id into p from public.portfolios limit 1;
+ insert into public.portfolios(name) values('Destino') returning id into p2;
+ insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,unit_price,fees,operation_date,account_id) values(asset,p,'buy',10,10,2,current_date,a);
+ insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,unit_price,fees,operation_date,account_id) values(asset,p,'buy',10,20,0,current_date,a);
+ if (select average_price from public.holdings where portfolio_id=p)<>15.1 then raise exception 'Preço médio incorreto'; end if;
+ insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,unit_price,fees,operation_date) values(asset,p,'sell',5,25,1,current_date) returning id into op;
+ if (select realized_profit from public.holdings where portfolio_id=p)<>48.5 then raise exception 'Lucro realizado incorreto'; end if;
+ insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,unit_price,operation_date) values(asset,p,'dividend',15,1,current_date);
+ if (select quantity from public.holdings where portfolio_id=p)<>15 or (select income from public.holdings where portfolio_id=p)<>15 then raise exception 'Dividendo incorreto'; end if;
+ insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,operation_date) values(asset,p,'split',2,current_date);
+ insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,operation_date) values(asset,p,'reverse_split',2,current_date);
+ insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,operation_date) values(asset,p,'bonus',5,current_date);
+ insert into public.investment_transactions(asset_id,portfolio_id,destination_portfolio_id,type,quantity,operation_date) values(asset,p,p2,'transfer',10,current_date);
+ if (select sum(cost) from public.holdings)<>226.5 or (select sum(realized_profit) from public.holdings)<>48.5 then raise exception 'Transferência altera custo/lucro'; end if;
+ denied=false;
+ begin insert into public.investment_transactions(asset_id,portfolio_id,type,quantity,unit_price,operation_date) values(asset,p,'sell',1000,1,current_date); exception when raise_exception then denied=true; end;
+ if not denied then raise exception 'Venda descoberta aceita'; end if;
+ insert into public.asset_prices(asset_id,price,price_date) values(asset,30,current_date);
+ if (select current_price from public.assets where id=asset)<>30 then raise exception 'Cotação não atualiza ativo'; end if;
+ insert into public.goals(name,target_amount,deadline) values('Teste',1000,current_date+30) returning id into goal;
+ insert into public.goal_contributions(goal_id,amount,contribution_date) values(goal,250,current_date);
+ if (select accumulated_amount from public.goals where id=goal)<>250 then raise exception 'Aporte incorreto'; end if;
+ insert into public.recurring_transactions(description,amount,type,account_id,frequency,start_date,next_date,anchor_day) values('Mensal',10,'expense',a,'monthly',current_date,current_date,extract(day from current_date));
+ perform public.generate_recurring();
+ select count(*) into n from public.transactions where recurring_id is not null;
+ perform public.generate_recurring();
+ if (select count(*) from public.transactions where recurring_id is not null)<>n or n<3 then raise exception 'Recorrência não idempotente'; end if;
+ if jsonb_typeof(public.app_snapshot()->'accounts'->0->'current_balance')<>'string' then raise exception 'Precisão perdida no JSON'; end if;
+ raise notice 'PASS: RLS, FK, saldo, edição, pendência, exclusão, preço médio, venda, dividendo, eventos, transferência, cotação, metas, recorrência e JSON decimal';
+end $$;
+rollback;

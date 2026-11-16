@@ -1,0 +1,105 @@
+# Mapa de arquivos
+
+Raiz: `C:/Users/Gustavo/Desktop/Gustavo/investfast/`. Todos os caminhos abaixo são relativos a essa raiz e já estão salvos.
+
+| Arquivo | Finalidade |
+| --- | --- |
+| `.env.example` | Modelo sem credenciais. |
+| `.env.local` | Configuração local, ignorada pelo Git. |
+| `.gitignore` | Exclui ambientes locais, caches e builds. |
+| `README.md` | Execução, funcionalidades e arquitetura. |
+| `components.json` | Configuração shadcn/ui. |
+| `docs/DEPLOY.md` | Documentação específica da entrega. |
+| `docs/MELHORIAS.md` | Documentação específica da entrega. |
+| `docs/SUPABASE.md` | Documentação específica da entrega. |
+| `docs/VERIFICACAO.md` | Documentação específica da entrega. |
+| `eslint.config.mjs` | Regras de qualidade Next.js e TypeScript. |
+| `next.config.ts` | Configuração Next.js e raiz explícita do projeto. |
+| `package-lock.json` | Lockfile reprodutível. |
+| `package.json` | Dependências fixas e comandos de execução/teste. |
+| `postcss.config.mjs` | Integração Tailwind/PostCSS. |
+| `scripts/check-supabase.mjs` | Verifica conectividade e configurações públicas do Auth. |
+| `scripts/document-files.mjs` | Gera este inventário a partir dos arquivos existentes. |
+| `scripts/generate-routes.mjs` | Materializa os arquivos de página de cada módulo. |
+| `scripts/generate-schema.mjs` | Gera o schema SQL inicial completo. |
+| `scripts/test-api.mjs` | Teste HTTP completo com conta temporária excluída ao final. |
+| `src/app/(auth)/atualizar-senha/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(auth)/cadastro/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(auth)/layout.tsx` | Layout visual das páginas de acesso. |
+| `src/app/(auth)/login/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(auth)/recuperar-senha/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/analises/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/aportes/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/carteiras/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/categorias/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/configuracoes/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/contas/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/cotacoes/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/dashboard/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/error.tsx` | Tratamento recuperável de erros nas páginas privadas. |
+| `src/app/(dashboard)/investimentos/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/layout.tsx` | Valida a sessão e monta o layout privado. |
+| `src/app/(dashboard)/loading.tsx` | Carregamento das páginas privadas. |
+| `src/app/(dashboard)/metas/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/operacoes/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/orcamentos/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/recorrencias/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/relatorios/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/(dashboard)/transacoes/page.tsx` | Página do módulo indicado no caminho; renderiza o componente correspondente. |
+| `src/app/api/attachments/route.ts` | Upload privado, URL temporária e exclusão de arquivos. |
+| `src/app/api/auth/[action]/route.ts` | Login, cadastro, logout, recuperação, alteração de senha/e-mail e exclusão. |
+| `src/app/api/data/route.ts` | Geração idempotente de recorrências, leitura decimal e persistência de alertas. |
+| `src/app/api/health/route.ts` | Endpoint público de integridade da aplicação. |
+| `src/app/api/preferences/route.ts` | Persistência do tema no perfil. |
+| `src/app/api/records/[entity]/route.ts` | CRUD autenticado e validado por entidade. |
+| `src/app/auth/callback/route.ts` | Troca código PKCE por sessão e redireciona apenas a destinos permitidos. |
+| `src/app/auth/confirm/route.ts` | Confirma OTP/token hash para e-mail, recuperação e alteração de e-mail. |
+| `src/app/globals.css` | Tailwind, temas, formulários, cards e tokens visuais. |
+| `src/app/layout.tsx` | Documento pt-BR, metadados e providers. |
+| `src/app/not-found.tsx` | Página de endereço inexistente. |
+| `src/app/page.tsx` | Redireciona para login ou dashboard. |
+| `src/components/charts/finance-charts.tsx` | Gráficos Recharts de evolução, fluxo, alocação e rentabilidade. |
+| `src/components/finances/attachments.tsx` | Envio, download e exclusão confirmada de anexos privados. |
+| `src/components/finances/dashboard.tsx` | Dashboard, indicadores, séries históricas, transações recentes e metas. |
+| `src/components/finances/period-filter.tsx` | Períodos predefinidos e intervalo personalizado. |
+| `src/components/finances/record-page.tsx` | CRUDs, filtros, exportação, detalhes, confirmação de exclusão e navegação entre módulos. |
+| `src/components/finances/reports.tsx` | Relatórios e análises com filtros, rankings, proventos e comparação. |
+| `src/components/finances/settings.tsx` | Perfil, e-mail, recuperação de senha, auditoria e exclusão de conta. |
+| `src/components/forms/auth-form.tsx` | Formulários de login, cadastro, recuperação e nova senha. |
+| `src/components/forms/record-form.tsx` | Formulário React Hook Form configurado por entidade, com validação Zod. |
+| `src/components/investments/positions-table.tsx` | Quantidade, custo, preço médio, resultados, proventos, alocação e anualização elegível. |
+| `src/components/layout/app-shell.tsx` | Sidebar desktop, menu mobile, navegação, cabeçalho e logout. |
+| `src/components/layout/profile-preferences.tsx` | Aplica a preferência visual persistida do usuário. |
+| `src/components/layout/theme-toggle.tsx` | Alterna tema e salva a escolha no perfil autenticado. |
+| `src/components/providers.tsx` | Providers de cache, tema e notificações. |
+| `src/components/ui/button.tsx` | Botão no padrão shadcn/ui com variantes e Radix Slot. |
+| `src/components/ui/data-state.tsx` | Skeletons, estados vazios e mensagens de falha recuperável. |
+| `src/components/ui/dialog.tsx` | Modal nativo com foco, fechamento por teclado e rolagem controlada. |
+| `src/hooks/use-finances.ts` | Consultas e mutações TanStack Query, invalidação de cache e mensagens. |
+| `src/lib/analysis/provider.ts` | Contrato de análises e implementação determinística, sem API paga. |
+| `src/lib/api.ts` | Autenticação dos endpoints, proteção de origem e tradução de erros. |
+| `src/lib/calculations/decimal.ts` | Construtor Decimal com 48 dígitos de precisão. |
+| `src/lib/calculations/finance.ts` | Cálculos decimais, reconstrução de posições, fluxo, orçamento, metas, histórico e análises. |
+| `src/lib/csv.ts` | Exportação CSV com escape de conteúdo e neutralização de fórmulas. |
+| `src/lib/domain.ts` | Contratos de dados, nomes em português, campos, opções e configuração dos módulos. |
+| `src/lib/quotes/provider.ts` | Contrato validado de cotações e provedor manual para integração futura. |
+| `src/lib/supabase/client.ts` | Cliente Supabase do navegador. |
+| `src/lib/supabase/proxy.ts` | Renova cookies e redireciona usuários conforme autenticação. |
+| `src/lib/supabase/server.ts` | Cliente SSR por requisição, restrito ao servidor. |
+| `src/lib/utils.ts` | Composição de classes CSS. |
+| `src/lib/utils/format.ts` | Formatação brasileira de valores e datas, somente para exibição. |
+| `src/lib/validations/entities.ts` | Esquemas Zod compartilhados entre formulários e servidor. |
+| `src/lib/validations/environment.ts` | Validação de URL e chave publicável do Supabase. |
+| `src/proxy.ts` | Matcher e entrada do proxy Next.js. |
+| `src/types/database.ts` | Tipos gerados a partir do schema Supabase. |
+| `src/types/money.ts` | Convenção de transporte de valores decimais em strings. |
+| `supabase/hardening.sql` | Ajustes de integridade, alertas persistidos e proteção adicional dos anexos. |
+| `supabase/migrations/20261027165151_investfast_initial_schema.sql` | Migração versionada para reprodução em um banco vazio. |
+| `supabase/migrations/20261029011454_investfast_integrity_and_alerts.sql` | Migração versionada para reprodução em um banco vazio. |
+| `supabase/schedule.sql` | Agenda a geração diária de recorrências no Supabase. |
+| `supabase/schema.sql` | Schema inicial completo com tabelas, índices, políticas, funções e triggers. |
+| `supabase/tests.sql` | Testes SQL transacionais com rollback. |
+| `tests/finance.test.ts` | Testes automatizados de cálculos, validação e CSV. |
+| `tsconfig.json` | TypeScript estrito e alias @/. |
+
+`next-env.d.ts` e `.next` são gerados pelo Next.js. Arquivos `.gitkeep` preservam pastas no Git. Nenhuma credencial deve ser copiada para a documentação.

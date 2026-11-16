@@ -1,0 +1,12 @@
+/.env*
+/.git
+/.next
+/node_modules
+/.vercel
+/supabase
+/scripts
+/tests
+/docs
+/*.tsbuildinfo
+/README.md
+/*.png

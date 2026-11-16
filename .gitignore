@@ -1,0 +1,15 @@
+node_modules/
+.next/
+out/
+coverage/
+.env*
+!.env.example
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+supabase/.temp/
+supabase/.branches/
+npm-debug.log*
+
+.vercel
+.env*
