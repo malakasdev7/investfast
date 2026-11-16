@@ -207,23 +207,23 @@ export function AppShell({
 
   const sidebar = (
     <>
-      <div className="flex items-center justify-between px-5 py-5">
+      <div className="flex items-center justify-between px-5 py-5 border-b border-white/20 dark:border-white/10">
         <Link href="/dashboard" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight">
-          <span className="brand-mark flex size-8 items-center justify-center rounded-xl shadow-2xs">
+          <span className="brand-mark flex size-8 items-center justify-center rounded-xl shadow-xs">
             <ArrowUpRight className="size-4.5 stroke-[2.25]" />
           </span>
-          <span>InvestFast</span>
+          <span className="tracking-tight">InvestFast</span>
         </Link>
-        <span className="rounded-md border px-1.5 py-0.5 text-[10px] font-medium tracking-wider text-muted-foreground">
+        <span className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-primary">
           PRO
         </span>
       </div>
 
-      <div className="px-4 pb-4">
+      <div className="px-4 py-3.5">
         <Button
           type="button"
           onClick={() => setQuickEntity({ entity: "transactions", title: "Nova transação" })}
-          className="w-full justify-center shadow-2xs"
+          className="w-full justify-center shadow-md shadow-primary/15"
         >
           <Plus className="size-4" />
           Novo lançamento
@@ -244,16 +244,16 @@ export function AppShell({
                   key={href}
                   href={href}
                   className={cn(
-                    "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] transition-all duration-150",
+                    "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] transition-all duration-200",
                     active
-                      ? "bg-primary/10 font-semibold text-primary"
-                      : "font-medium text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+                      ? "bg-primary/12 font-semibold text-primary border border-primary/20 shadow-2xs backdrop-blur-md"
+                      : "font-medium text-muted-foreground hover:bg-white/40 dark:hover:bg-white/5 hover:text-foreground",
                   )}
                 >
                   {active && (
                     <span
                       aria-hidden="true"
-                      className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-primary"
+                      className="absolute left-0 top-1/2 h-4.5 w-1 -translate-y-1/2 rounded-full bg-primary shadow-xs"
                     />
                   )}
                   <Icon
@@ -270,14 +270,14 @@ export function AppShell({
         ))}
       </nav>
 
-      <div className="space-y-1 border-t p-3">
+      <div className="space-y-1 border-t border-white/20 dark:border-white/10 p-3">
         <Link
           href="/configuracoes"
           className={cn(
             "flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-colors",
             path === "/configuracoes"
-              ? "bg-primary/10 font-semibold text-primary"
-              : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+              ? "bg-primary/12 font-semibold text-primary border border-primary/20"
+              : "text-muted-foreground hover:bg-white/40 dark:hover:bg-white/5 hover:text-foreground",
           )}
         >
           <Settings className="size-4 shrink-0" />
@@ -296,19 +296,21 @@ export function AppShell({
 
   return (
     <div className="app-canvas min-h-dvh">
-      <aside className="app-sidebar fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r lg:flex">
+      {/* Sidebar Flutuante com Liquid Glass Leve */}
+      <aside className="app-sidebar fixed inset-y-0 left-0 z-30 hidden w-64 flex-col lg:flex">
         {sidebar}
       </aside>
 
       <div className="lg:pl-64">
-        <header className="app-header sticky top-0 z-20 flex h-14 items-center justify-between gap-3 border-b px-4 md:h-[68px] md:px-8">
+        {/* Header com Liquid Glass Superior */}
+        <header className="app-header sticky top-0 z-20 flex h-14 items-center justify-between gap-3 px-4 md:h-[68px] md:px-8">
           <div className="flex min-w-0 items-center gap-2.5">
             <Link
               href="/dashboard"
               className="flex items-center gap-2 lg:hidden"
               aria-label="Início InvestFast"
             >
-              <span className="brand-mark flex size-8 items-center justify-center rounded-xl">
+              <span className="brand-mark flex size-8 items-center justify-center rounded-xl shadow-xs">
                 <ArrowUpRight className="size-4" />
               </span>
             </Link>
@@ -326,10 +328,10 @@ export function AppShell({
               href="/posso-comprar"
               aria-label="Posso comprar?"
               className={cn(
-                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors lg:inline-flex",
+                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all duration-200 lg:inline-flex backdrop-blur-md shadow-2xs",
                 path === "/posso-comprar"
-                  ? "border-primary/30 bg-primary/10 text-primary font-semibold"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+                  ? "border-primary/40 bg-primary/12 text-primary font-semibold shadow-xs"
+                  : "border-glass-border bg-glass-light-bg text-muted-foreground hover:text-foreground hover:bg-glass-medium-bg",
               )}
             >
               <Scale className="size-3.5 text-primary" />
@@ -339,10 +341,10 @@ export function AppShell({
               href="/calculadora"
               aria-label="Calculadora de investimentos"
               className={cn(
-                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors md:inline-flex",
+                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all duration-200 md:inline-flex backdrop-blur-md shadow-2xs",
                 path === "/calculadora"
-                  ? "border-primary/30 bg-primary/10 text-primary font-semibold"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+                  ? "border-primary/40 bg-primary/12 text-primary font-semibold shadow-xs"
+                  : "border-glass-border bg-glass-light-bg text-muted-foreground hover:text-foreground hover:bg-glass-medium-bg",
               )}
             >
               <Calculator className="size-3.5 text-primary" />
@@ -352,10 +354,10 @@ export function AppShell({
               href="/assistente"
               aria-label="Assistente IA"
               className={cn(
-                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors sm:inline-flex",
+                "hidden items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-medium transition-all duration-200 sm:inline-flex backdrop-blur-md shadow-2xs",
                 path === "/assistente"
-                  ? "border-primary/30 bg-primary/10 text-primary"
-                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+                  ? "border-primary/40 bg-primary/12 text-primary font-semibold shadow-xs"
+                  : "border-glass-border bg-glass-light-bg text-muted-foreground hover:text-foreground hover:bg-glass-medium-bg",
               )}
             >
               <Sparkles className="size-3.5 text-primary" />
@@ -365,19 +367,19 @@ export function AppShell({
               href="/analises"
               aria-label="Ver alertas e análises"
               className={cn(
-                "flex size-9 items-center justify-center rounded-xl border border-transparent text-muted-foreground transition-colors hover:border-border hover:bg-card hover:text-foreground",
-                path === "/analises" && "border-primary/20 bg-primary/10 text-primary",
+                "flex size-9 items-center justify-center rounded-xl border border-transparent text-muted-foreground transition-all duration-200 hover:border-glass-border hover:bg-glass-light-bg hover:text-foreground backdrop-blur-md",
+                path === "/analises" && "border-primary/30 bg-primary/12 text-primary shadow-xs",
               )}
             >
               <Bell className="size-[17px]" />
             </Link>
             <ThemeToggle />
-            <div className="mx-0.5 hidden h-5 w-px bg-border sm:block" />
+            <div className="mx-0.5 hidden h-5 w-px bg-white/20 dark:bg-white/10 sm:block" />
             <Link
               href="/configuracoes"
-              className="flex items-center gap-2.5 rounded-xl py-1 pl-1 pr-2 transition-colors hover:bg-muted/60"
+              className="flex items-center gap-2.5 rounded-xl py-1 pl-1 pr-2 transition-all duration-200 hover:bg-white/40 dark:hover:bg-white/5"
             >
-              <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+              <span className="flex size-8 items-center justify-center rounded-full bg-primary/12 border border-primary/25 text-xs font-semibold text-primary shadow-2xs">
                 {initials}
               </span>
               <span className="hidden text-xs font-medium text-foreground xl:block">
@@ -392,10 +394,10 @@ export function AppShell({
         </main>
       </div>
 
-      {/* Quick Action Bottom Sheet (Mobile) */}
+      {/* Quick Action Bottom Sheet (Mobile) com Liquid Glass */}
       {quickOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/55 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-md lg:hidden"
           onClick={() => setQuickOpen(false)}
         >
           <div
@@ -403,9 +405,9 @@ export function AppShell({
             aria-modal="true"
             aria-label="Novo lançamento rápido"
             onClick={(e) => e.stopPropagation()}
-            className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t bg-card p-5 pb-[calc(5.5rem_+_env(safe-area-inset-bottom))] shadow-2xl"
+            className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl border-t border-white/30 dark:border-white/15 bg-white/85 dark:bg-slate-900/85 p-5 pb-[calc(5.5rem_+_env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-2xl"
           >
-            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border-strong" />
+            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-muted-foreground/30" />
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h2 className="text-base font-semibold tracking-tight">Ação rápida</h2>
@@ -414,7 +416,7 @@ export function AppShell({
               <button
                 onClick={() => setQuickOpen(false)}
                 aria-label="Fechar ações rápidas"
-                className="rounded-full bg-muted p-2 text-muted-foreground hover:text-foreground"
+                className="rounded-full bg-muted/80 p-2 text-muted-foreground hover:text-foreground backdrop-blur-md"
               >
                 <X className="size-4" />
               </button>
@@ -426,28 +428,28 @@ export function AppShell({
                   title: "Nova transação",
                   desc: "Receita, despesa ou transferência",
                   Icon: ArrowLeftRight,
-                  color: "bg-primary/10 text-primary",
+                  color: "bg-primary/10 text-primary border-primary/20",
                 },
                 {
                   entity: "investment_transactions",
                   title: "Nova operação",
                   desc: "Compra, venda ou provento",
                   Icon: Coins,
-                  color: "bg-primary/10 text-primary",
+                  color: "bg-primary/10 text-primary border-primary/20",
                 },
                 {
                   entity: "accounts",
                   title: "Nova conta",
                   desc: "Banco, corretora ou carteira",
                   Icon: Wallet,
-                  color: "bg-muted text-foreground",
+                  color: "bg-muted text-foreground border-white/20 dark:border-white/10",
                 },
                 {
                   entity: "goal_contributions",
                   title: "Novo aporte",
                   desc: "Guardar dinheiro em uma meta",
                   Icon: PiggyBank,
-                  color: "bg-muted text-foreground",
+                  color: "bg-muted text-foreground border-white/20 dark:border-white/10",
                 },
               ].map((item) => (
                 <button
@@ -456,9 +458,9 @@ export function AppShell({
                     setQuickOpen(false);
                     setQuickEntity({ entity: item.entity, title: item.title });
                   }}
-                  className="flex flex-col items-start rounded-2xl border bg-background p-3.5 text-left transition-colors active:scale-[0.98] hover:bg-muted/60"
+                  className="flex flex-col items-start rounded-2xl border border-glass-border bg-glass-light-bg p-3.5 text-left transition-all backdrop-blur-md active:scale-[0.98] hover:bg-glass-medium-bg hover:shadow-xs cursor-pointer"
                 >
-                  <span className={cn("mb-2.5 rounded-xl p-2.5", item.color)}>
+                  <span className={cn("mb-2.5 rounded-xl p-2.5 border", item.color)}>
                     <item.Icon className="size-4" />
                   </span>
                   <span className="text-sm font-semibold">{item.title}</span>
@@ -470,10 +472,10 @@ export function AppShell({
         </div>
       )}
 
-      {/* Mobile Full Hub Menu Sheet ("Menu / Mais") */}
+      {/* Mobile Full Hub Menu Sheet ("Menu / Mais") com Liquid Glass */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/55 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-md lg:hidden"
           onClick={() => setMenuOpen(false)}
         >
           <div
@@ -481,12 +483,12 @@ export function AppShell({
             aria-modal="true"
             aria-label="Menu completo"
             onClick={(e) => e.stopPropagation()}
-            className="fixed inset-x-0 bottom-0 z-50 flex max-h-[86dvh] flex-col rounded-t-3xl border-t bg-card shadow-2xl"
+            className="fixed inset-x-0 bottom-0 z-50 flex max-h-[86dvh] flex-col rounded-t-3xl border-t border-white/30 dark:border-white/15 bg-white/85 dark:bg-slate-900/85 shadow-2xl backdrop-blur-2xl"
           >
-            <div className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-border-strong" />
-            <div className="flex items-center justify-between border-b px-5 py-3.5">
+            <div className="mx-auto mt-2.5 h-1.5 w-12 shrink-0 rounded-full bg-muted-foreground/30" />
+            <div className="flex items-center justify-between border-b border-white/20 dark:border-white/10 px-5 py-3.5">
               <div className="flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
+                <span className="flex size-10 items-center justify-center rounded-full bg-primary/12 border border-primary/25 text-sm font-semibold text-primary shadow-xs">
                   {initials}
                 </span>
                 <div className="min-w-0">
@@ -497,7 +499,7 @@ export function AppShell({
               <button
                 onClick={() => setMenuOpen(false)}
                 aria-label="Fechar menu"
-                className="rounded-full bg-muted p-2 text-muted-foreground hover:text-foreground"
+                className="rounded-full bg-muted/80 p-2 text-muted-foreground hover:text-foreground backdrop-blur-md"
               >
                 <X className="size-4" />
               </button>
@@ -518,16 +520,18 @@ export function AppShell({
                           href={href}
                           onClick={() => setMenuOpen(false)}
                           className={cn(
-                            "flex items-start gap-2.5 rounded-2xl border p-3 transition-colors active:scale-[0.98]",
+                            "flex items-start gap-2.5 rounded-2xl border p-3 transition-all backdrop-blur-md active:scale-[0.98]",
                             active
-                              ? "border-primary/40 bg-primary/10 text-primary"
-                              : "bg-background hover:bg-muted/60",
+                              ? "border-primary/40 bg-primary/15 text-primary shadow-xs"
+                              : "border-glass-border bg-glass-light-bg hover:bg-glass-medium-bg",
                           )}
                         >
                           <span
                             className={cn(
-                              "mt-0.5 rounded-xl p-2",
-                              active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+                              "mt-0.5 rounded-xl p-2 border",
+                              active
+                                ? "bg-primary text-primary-foreground border-primary"
+                                : "bg-muted text-muted-foreground border-white/20 dark:border-white/10",
                             )}
                           >
                             <Icon className="size-4" />
@@ -547,16 +551,16 @@ export function AppShell({
                 </div>
               ))}
 
-              <div className="border-t pt-3">
+              <div className="border-t border-white/20 dark:border-white/10 pt-3">
                 <div className="grid grid-cols-2 gap-2">
                   <Link
                     href="/configuracoes"
                     onClick={() => setMenuOpen(false)}
                     className={cn(
-                      "flex items-center justify-center gap-2 rounded-xl border py-3 text-xs font-semibold transition-colors",
+                      "flex items-center justify-center gap-2 rounded-xl border py-3 text-xs font-semibold transition-all backdrop-blur-md",
                       path === "/configuracoes"
-                        ? "border-primary/40 bg-primary/10 text-primary"
-                        : "bg-background text-foreground hover:bg-muted/60",
+                        ? "border-primary/40 bg-primary/15 text-primary"
+                        : "border-glass-border bg-glass-light-bg text-foreground hover:bg-glass-medium-bg",
                     )}
                   >
                     <Settings className="size-4" />
@@ -564,7 +568,7 @@ export function AppShell({
                   </Link>
                   <button
                     onClick={logout}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-loss/20 bg-loss/5 py-3 text-xs font-semibold text-loss transition-colors hover:bg-loss/10"
+                    className="flex items-center justify-center gap-2 rounded-xl border border-loss/20 bg-loss/10 py-3 text-xs font-semibold text-loss transition-colors hover:bg-loss/20"
                   >
                     <LogOut className="size-4" />
                     Sair da conta
@@ -586,10 +590,10 @@ export function AppShell({
         </Dialog>
       )}
 
-      {/* Bottom Mobile Dock Navigation */}
+      {/* Bottom Mobile Dock Navigation com Liquid Glass */}
       <nav
         aria-label="Navegação inferior no celular"
-        className="mobile-dock fixed inset-x-0 bottom-0 z-50 border-t px-2 pt-1.5 lg:hidden"
+        className="mobile-dock fixed inset-x-0 bottom-0 z-50 px-2 pt-1.5 lg:hidden"
       >
         <div className="mx-auto grid max-w-md grid-cols-5 items-center gap-1">
           {dockTabs.slice(0, 2).map(({ href, label, Icon }) => {
@@ -608,7 +612,7 @@ export function AppShell({
                   active ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />}
+                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary shadow-xs" />}
                 <Icon className={cn("size-5 transition-transform", active && "scale-105")} />
                 <span className="truncate">{label}</span>
               </Link>
@@ -625,7 +629,7 @@ export function AppShell({
                 setQuickOpen((v) => !v);
               }}
               className={cn(
-                "brand-mark flex size-11 items-center justify-center rounded-2xl shadow-sm transition-transform active:scale-95",
+                "brand-mark flex size-11 items-center justify-center rounded-2xl shadow-md transition-all active:scale-95 cursor-pointer",
                 quickOpen && "rotate-45",
               )}
             >
@@ -649,7 +653,7 @@ export function AppShell({
                   active ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />}
+                {active && <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary shadow-xs" />}
                 <Icon className={cn("size-5 transition-transform", active && "scale-105")} />
                 <span className="truncate">{label}</span>
               </Link>
@@ -664,12 +668,12 @@ export function AppShell({
               setMenuOpen((v) => !v);
             }}
             className={cn(
-              "relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[10px] font-medium transition-colors",
+              "relative flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl py-1 text-[10px] font-medium transition-colors cursor-pointer",
               menuOpen || isMoreActive ? "font-semibold text-primary" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {(menuOpen || isMoreActive) && (
-              <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary" />
+              <span className="absolute top-0.5 h-0.5 w-5 rounded-full bg-primary shadow-xs" />
             )}
             {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
             <span>Menu</span>

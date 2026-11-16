@@ -23,12 +23,15 @@ const compact = (n: number) =>
   }).format(n);
 
 const tooltipStyle = {
-  background: "var(--card)",
-  border: "1px solid var(--border)",
-  borderRadius: 12,
+  backgroundColor: "var(--glass-frosted-bg)",
+  backdropFilter: "blur(20px)",
+  WebkitBackdropFilter: "blur(20px)",
+  border: "1px solid var(--glass-border)",
+  borderRadius: 14,
   color: "var(--foreground)",
-  boxShadow: "var(--shadow-elevated)",
+  boxShadow: "var(--shadow-glass-hover)",
   fontSize: 12,
+  padding: "10px 14px",
 };
 
 const fallbackColors = [
@@ -54,12 +57,12 @@ export function EvolutionChart({
           <defs>
             {keys.map((k, idx) => (
               <linearGradient key={k.key} id={`grad-${k.key}-${idx}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={k.color} stopOpacity={0.22} />
+                <stop offset="5%" stopColor={k.color} stopOpacity={0.28} />
                 <stop offset="95%" stopColor={k.color} stopOpacity={0.0} />
               </linearGradient>
             ))}
           </defs>
-          <CartesianGrid strokeDasharray="3 5" vertical={false} stroke="var(--border)" />
+          <CartesianGrid strokeDasharray="3 5" vertical={false} stroke="var(--border)" strokeOpacity={0.6} />
           <XAxis
             dataKey="label"
             tickLine={false}
@@ -84,7 +87,7 @@ export function EvolutionChart({
               name={k.name}
               stroke={k.color}
               fill={`url(#grad-${k.key}-${idx})`}
-              strokeWidth={2.25}
+              strokeWidth={2.5}
             />
           ))}
         </AreaChart>
@@ -98,7 +101,7 @@ export function FlowChart({ data }: { data: Record<string, unknown>[] }) {
     <div className="chart-shell h-64 min-w-0" role="img" aria-label="Receitas e despesas por mês">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 8, right: 6, bottom: 0, left: 4 }}>
-          <CartesianGrid strokeDasharray="3 5" vertical={false} stroke="var(--border)" />
+          <CartesianGrid strokeDasharray="3 5" vertical={false} stroke="var(--border)" strokeOpacity={0.6} />
           <XAxis
             dataKey="label"
             tickLine={false}
@@ -115,8 +118,8 @@ export function FlowChart({ data }: { data: Record<string, unknown>[] }) {
             tick={{ fill: "var(--muted-foreground)" }}
           />
           <Tooltip contentStyle={tooltipStyle} formatter={(v) => formatCurrency(String(v ?? 0))} />
-          <Bar name="Receitas" dataKey="income" fill="var(--gain)" radius={[5, 5, 0, 0]} />
-          <Bar name="Despesas" dataKey="expense" fill="var(--loss)" radius={[5, 5, 0, 0]} />
+          <Bar name="Receitas" dataKey="income" fill="var(--gain)" radius={[6, 6, 0, 0]} />
+          <Bar name="Despesas" dataKey="expense" fill="var(--loss)" radius={[6, 6, 0, 0]} />
           <Legend iconType="circle" iconSize={7} wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
         </BarChart>
       </ResponsiveContainer>
@@ -159,7 +162,7 @@ export function ReturnChart({ data }: { data: { name: string; value: number }[] 
     <div className="h-60 min-w-0" role="img" aria-label="Rentabilidade por carteira">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} layout="vertical" margin={{ left: 12, right: 20, top: 4, bottom: 4 }}>
-          <CartesianGrid strokeDasharray="3 5" horizontal={false} stroke="var(--border)" />
+          <CartesianGrid strokeDasharray="3 5" horizontal={false} stroke="var(--border)" strokeOpacity={0.6} />
           <XAxis
             type="number"
             tickFormatter={(v) => `${v}%`}
@@ -181,7 +184,7 @@ export function ReturnChart({ data }: { data: { name: string; value: number }[] 
             contentStyle={tooltipStyle}
             formatter={(v) => `${Number(v).toFixed(2)}%`}
           />
-          <Bar dataKey="value" name="Rentabilidade" radius={[0, 5, 5, 0]}>
+          <Bar dataKey="value" name="Rentabilidade" radius={[0, 6, 6, 0]}>
             {data.map((entry, idx) => (
               <Cell
                 key={idx}
